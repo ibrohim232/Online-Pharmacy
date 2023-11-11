@@ -1,0 +1,29 @@
+db_username: postgres
+db_password: 232
+db_uriName: postgres
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yvycvydfgg@gmail.com
+    password: jvrlucfxwbeevdnp
+    properties:
+      mail.smtp.starttls.enable: true
+      mjaail.smtp.auth: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${db_username}
+    password: ${db_password}
+    url: jdbc:postgresql://localhost:5432/${db_uriName}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+jwt:
+  expiry: 30000000
+  secret: asdfghjkl;'';lkjhgfdsaqwertyuiop[[poiuytrewqzxcvbnm,.,mnbvcxz

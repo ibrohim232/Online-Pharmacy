@@ -1,4 +1,4 @@
-package com.example.onlinemedicine.dto.base;
+package com.example.onlinemedicine.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MailDto {
-    private String message;
-    private String email;
+public class JwtResponseDto {
+    private String token;
+
 }

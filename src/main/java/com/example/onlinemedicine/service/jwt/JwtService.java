@@ -1,6 +1,7 @@
 package com.example.onlinemedicine.service.jwt;
 
 
+import com.example.onlinemedicine.dto.user.JwtRequestDto;
 import com.example.onlinemedicine.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -22,20 +23,20 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(UserEntity user) {
+    public String generateToken(JwtRequestDto jwtRequestDto) {
         Date date = new Date();
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(jwtRequestDto.getId().toString())
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + expiry))
-                .addClaims(getAuthorities(user))
+                .addClaims(getAuthorities(jwtRequestDto))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Map<String, Object> getAuthorities(UserEntity user) {
+    public Map<String, Object> getAuthorities(JwtRequestDto jwtRequestDto) {
         return Map.of("roles",
-                user.getAuthorities().stream()
+                jwtRequestDto.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList());
     }
