@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -12,5 +13,5 @@ import java.util.UUID;
 @Data
 public class UpdateUserRoleDto {
     private UUID userId;
-    private UserRole role;
+    private List<UserRole> role;
 }

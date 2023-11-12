@@ -19,11 +19,6 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping("/extract-token")
-    public UserRoleAndPermissionsDto extractToken(@RequestParam String token) {
-        return userService.extractToken(token);
-    }
-
     @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
     @PostMapping("/change-role")
     public UserResponseDto changeRole(@RequestBody UpdateUserRoleDto dto) {

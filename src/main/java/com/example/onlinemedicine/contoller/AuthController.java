@@ -1,10 +1,7 @@
 package com.example.onlinemedicine.contoller;
 
 ;
-import com.example.onlinemedicine.dto.base.JwtResponse;
-import com.example.onlinemedicine.dto.user.SingIdDto;
-import com.example.onlinemedicine.dto.user.UserRequestDto;
-import com.example.onlinemedicine.dto.user.UserResponseDto;
+import com.example.onlinemedicine.dto.user.*;
 import com.example.onlinemedicine.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,18 +15,18 @@ import java.util.List;
 public class AuthController {
     private final UserService userService;
 
-//    @PostMapping("/sign-up")
-//    public UserResponseDto singUp(@RequestBody UserRequestDto userRequestDto) {
-//        return userService.singUp(userRequestDto);
-//    }
+    @PostMapping("/sign-up")
+    public UserResponseDto singUp(@RequestBody UserRequestDto userRequestDto) {
+        return userService.singUp(userRequestDto);
+    }
 
     @PostMapping("/sign-in")
-    public JwtResponse singIn(@RequestBody SingIdDto singIdDto) {
+    public UserResponseDto singIn(@RequestBody SingIdDto singIdDto) {
         return userService.singIn(singIdDto);
     }
 
     @PostMapping("/verify")
-    public JwtResponse verify(@RequestParam String email, @RequestParam int code) {
+    public boolean verify(@RequestParam String email, @RequestParam int code) {
         return userService.verify(email, code);
     }
 
@@ -37,5 +34,15 @@ public class AuthController {
     @GetMapping("/get-all")
     public List<UserResponseDto> getAll(@RequestParam(defaultValue = "1") int size, @RequestParam(defaultValue = "1") int page) {
         return userService.getAll(page, size);
+    }
+
+    @GetMapping("/get-verify-code")
+    public void getVerifyCode(@RequestParam String email) {
+        userService.getVerifyCode(email);
+    }
+
+    @PostMapping("/generate-token")
+    public JwtResponseDto generateToken(@RequestBody JwtRequestDto jwtRequestDto) {
+        return userService.generateToken(jwtRequestDto);
     }
 }
