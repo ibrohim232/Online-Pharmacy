@@ -1,6 +1,6 @@
 package com.example.onlinemedicine.contoller;
 
-;
+
 import com.example.onlinemedicine.dto.user.*;
 import com.example.onlinemedicine.service.UserService;
 import lombok.RequiredArgsConstructor;

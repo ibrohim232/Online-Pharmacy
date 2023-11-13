@@ -4,6 +4,7 @@ package com.example.onlinemedicine.service;
 import com.example.onlinemedicine.dto.user.JwtResponseDto;
 import com.example.onlinemedicine.dto.user.*;
 import com.example.onlinemedicine.entity.UserEntity;
+import com.example.onlinemedicine.entity.enums.UserRole;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.exception.WrongInputException;
 import com.example.onlinemedicine.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +38,9 @@ public class UserService {
     @Transactional
     public UserResponseDto singUp(UserRequestDto createReq) {
         UserEntity user = mapCRToEntity(createReq);
+        ArrayList<UserRole> userRoles = new ArrayList<>();
+        userRoles.add(UserRole.USER);
+        user.setRoles(userRoles);
         user.setCode(random.nextInt(1000, 10000));
         repository.save(user);
         return mapEntityToRES(user);
@@ -98,12 +103,13 @@ public class UserService {
     protected UserResponseDto mapEntityToRES(UserEntity entity) {
         return new UserResponseDto(
                 entity.getId(),
-                entity.getCreatedData(),
-                entity.getUpdatedDate(),
+                entity.getCreated(),
+                entity.getUpdated(),
                 entity.getFullName(),
                 entity.getUsername(),
                 entity.getPhoneNumber(),
-                entity.getRoles());
+                entity.getRoles(),
+                entity.getPermissions());
     }
 
 

@@ -23,7 +23,15 @@ public class SpringConfig {
     private final AuthenticationService authenticationService;
 
 
-    private final String[] WHITE_LIST = {"/auth/sign-up", "/auth/sign-in", "/auth/verify", "/extract-token", "/swagger-ui/**", "/v3/api-docs/**","/user/extract-token"};
+    private final String[] WHITE_LIST = {"/auth/sign-up",
+            "/auth/sign-in",
+            "/auth/verify",
+            "/extract-token",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/user/extract-token",
+            "/auth/generate-token",
+            "/auth/get-verify-code"};
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
