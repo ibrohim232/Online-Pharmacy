@@ -1,6 +1,7 @@
 db_username: postgres
-db_password: 232
+db_password: postgres
 db_uriName: postgres
+
 
 spring:
   mail:
