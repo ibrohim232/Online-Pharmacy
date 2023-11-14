@@ -15,24 +15,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@MappedSuperclass
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseEntity {
+@Getter
+@Setter
+@MappedSuperclass
+public class BaseEntity {
     {
         this.isActive = true;
     }
+
     @Id
     @GeneratedValue
     private UUID id;
     @CreationTimestamp
-    protected LocalDateTime createdData;
-
+    private LocalDateTime created;
     @UpdateTimestamp
-    private LocalDateTime updatedDate;
-    @Column(columnDefinition = "boolean default true")
+    private LocalDateTime updated;
     private boolean isActive;
-
 }

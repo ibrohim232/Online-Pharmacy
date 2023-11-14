@@ -13,8 +13,8 @@ import java.util.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@Entity
 @NoArgsConstructor
+@Entity
 @Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails {
 

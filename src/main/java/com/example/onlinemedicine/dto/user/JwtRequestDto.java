@@ -28,4 +28,5 @@ public class JwtRequestDto {
         }
         return simpleGrantedAuthorities;
     }
+
 }

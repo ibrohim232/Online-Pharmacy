@@ -4,7 +4,6 @@ package com.example.onlinemedicine.contoller;
 import com.example.onlinemedicine.dto.user.UpdateUserPermissionsDto;
 import com.example.onlinemedicine.dto.user.UpdateUserRoleDto;
 import com.example.onlinemedicine.dto.user.UserResponseDto;
-import com.example.onlinemedicine.dto.user.UserRoleAndPermissionsDto;
 import com.example.onlinemedicine.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
