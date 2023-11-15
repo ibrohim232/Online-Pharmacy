@@ -26,7 +26,7 @@ public class OrderController {
             security = @SecurityRequirement(name = "open", scopes = {"USER"})
     )
     @PostMapping("/save")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN','OWNER','USER')")
+    @PreAuthorize("hasAnyRole('USER')")
     public OrderBucketResponseDto save(@RequestBody OrderBucketRequestDto orderBucketRequestDto){
         return orderService.save(orderBucketRequestDto);
     }
