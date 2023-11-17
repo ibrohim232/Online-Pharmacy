@@ -31,7 +31,9 @@ public class SpringConfig {
             "/v3/api-docs/**",
             "/user/extract-token",
             "/auth/generate-token",
-            "/auth/get-verify-code"};
+            "/auth/get-verify-code",
+            "/api/v1/pharmacy/**"
+    };
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
