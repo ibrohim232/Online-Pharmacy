@@ -38,6 +38,22 @@ public class MedicineController {
         this.medicineService.deleteById(id);
     }
 
+    @GetMapping("/find-by-name-order-by-lower-price")
+    public List<MedicineResponseDto> findByNameOrderByLowerPrice(@RequestParam String name) {
+        return medicineService.findByNameOrderByLower(name);
+    }
+
+    @GetMapping("/find-by-name-order-by-higher-price")
+    public List<MedicineResponseDto> findByNameOrderByHigherPrice(@RequestParam String name) {
+        return medicineService.findByNameOrderByHigher(name);
+    }
+
+    @GetMapping("/find-by-name")
+    public MedicineResponseDto findByName(@RequestParam String name) {
+        return medicineService.findByName(name);
+    }
+
+
     public MedicineController(final MedicineService medicineService) {
         this.medicineService = medicineService;
     }

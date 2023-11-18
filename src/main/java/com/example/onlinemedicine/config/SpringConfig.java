@@ -32,7 +32,10 @@ public class SpringConfig {
             "/user/extract-token",
             "/auth/generate-token",
             "/auth/get-verify-code",
-            "/api/v1/pharmacy/**"
+            "/api/v1/pharmacy/**",
+            "/auth/get-verify-code",
+            "/medicine/find-by-name-order-by-higher-price",
+            "/medicine/find-by-name-order-by-lower-price"
     };
 
     @Bean

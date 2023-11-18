@@ -22,21 +22,26 @@ public class MedicineService {
     private final MedicineRepository repository;
 
     public MedicineResponseDto create(MedicineRequestDto medicineRequestDto) {
-        Optional<MedicineEntity> entity = this.repository.findByNameAndAdviceTypeAndMeasurementTypeAndMedicineType(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType());
+        Optional<MedicineEntity> entity = this.repository.findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyId(
+                medicineRequestDto.getName(),
+                medicineRequestDto.getAdviceType(),
+                medicineRequestDto.getMeasurementType(),
+                medicineRequestDto.getMedicineType(),
+                medicineRequestDto.getPharmacyId());
         if (entity.isPresent()) {
             throw new RuntimeException();
         } else if (medicineRequestDto.getBestBefore().isBefore(medicineRequestDto.getIssuedAt())) {
             throw new RuntimeException();
         } else {
-            MedicineEntity map = (MedicineEntity) this.modelMapper.map(medicineRequestDto, MedicineEntity.class);
+            MedicineEntity map = this.modelMapper.map(medicineRequestDto, MedicineEntity.class);
             this.repository.save(map);
-            return (MedicineResponseDto) this.modelMapper.map(map, MedicineResponseDto.class);
+            return entityToResponse(map);
         }
     }
 
     public MedicineResponseDto findById(UUID id) {
-        MedicineEntity medicineEntity = (MedicineEntity) this.repository.findById(id).orElseThrow();
-        return (MedicineResponseDto) this.modelMapper.map(medicineEntity, MedicineResponseDto.class);
+        MedicineEntity medicineEntity = this.repository.findById(id).orElseThrow();
+        return entityToResponse(medicineEntity);
     }
 
     public void deleteById(UUID id) {
@@ -46,9 +51,46 @@ public class MedicineService {
     public List<MedicineResponseDto> getAll(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(pageNumber, size);
         Page<MedicineEntity> page = this.repository.findAll(pageable);
-        return page.get().map((e) -> {
-            return new MedicineResponseDto(e.getId(), e.getName(), e.getDescription(), e.getManufactured(), e.getManufacturer(), e.getAdviceType(), e.getMeasurementType(), e.getMedicineType(), e.getBestBefore(), e.getIssuedAt(), e.getPrice(), e.getCount(), e.getCreated(), e.getUpdated());
-        }).toList();
+        return page.get().map((e) -> new MedicineResponseDto(
+                e.getId(),
+                e.getName(),
+                e.getPharmacyId(),
+                e.getDescription(),
+                e.getManufactured(),
+                e.getManufacturer(),
+                e.getAdviceType(),
+                e.getMeasurementType(),
+                e.getMedicineType(),
+                e.getBestBefore(),
+                e.getIssuedAt(),
+                e.getPrice(),
+                e.getCount(),
+                e.getCreated(),
+                e.getUpdated())).toList();
     }
+
+    public List<MedicineResponseDto> findByNameOrderByHigher(String name) {
+        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceDesc(name);
+        return medicineEntities.stream().map(this::entityToResponse).toList();
+    }
+
+    public List<MedicineResponseDto> findByNameOrderByLower(String name) {
+        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceDesc(name);
+        return medicineEntities.stream().map(this::entityToResponse).toList();
+    }
+
+    public MedicineResponseDto findByName(String name) {
+        MedicineEntity medicineEntity = repository.findByName(name).orElseThrow();
+        return modelMapper.map(medicineEntity, MedicineResponseDto.class);
+    }
+
+    private MedicineResponseDto entityToResponse(MedicineEntity medicineEntity) {
+        return modelMapper.map(medicineEntity, MedicineResponseDto.class);
+    }
+
+    private MedicineEntity requestToEntity(MedicineRequestDto medicineRequestDto) {
+        return modelMapper.map(medicineRequestDto, MedicineEntity.class);
+    }
+
 
 }
