@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BaseDto {
     private UUID id;
+
     @CreationTimestamp
     private LocalDateTime created;
     @UpdateTimestamp
