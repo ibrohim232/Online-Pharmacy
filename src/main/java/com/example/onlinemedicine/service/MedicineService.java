@@ -3,7 +3,9 @@ package com.example.onlinemedicine.service;
 import com.example.onlinemedicine.dto.midicine.MedicineRequestDto;
 import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.entity.MedicineEntity;
+import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.repository.MedicineRepository;
+import com.example.onlinemedicine.repository.PharmacyRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Service
 public class MedicineService {
     private final ModelMapper modelMapper;
+    private final PharmacyRepository pharmacyRepository;
     private final MedicineRepository repository;
 
     public MedicineResponseDto create(MedicineRequestDto medicineRequestDto) {
@@ -28,12 +31,14 @@ public class MedicineService {
                 medicineRequestDto.getMeasurementType(),
                 medicineRequestDto.getMedicineType(),
                 medicineRequestDto.getPharmacyId());
-        if (entity.isPresent()) {
+        Optional<PharmacyEntity> pharmacyEntity = pharmacyRepository.findById(medicineRequestDto.getPharmacyId());
+
+        if (entity.isPresent() || pharmacyEntity.isPresent()) {
             throw new RuntimeException();
         } else if (medicineRequestDto.getBestBefore().isBefore(medicineRequestDto.getIssuedAt())) {
             throw new RuntimeException();
         } else {
-            MedicineEntity map = this.modelMapper.map(medicineRequestDto, MedicineEntity.class);
+            MedicineEntity map = requestToEntity(medicineRequestDto);
             this.repository.save(map);
             return entityToResponse(map);
         }

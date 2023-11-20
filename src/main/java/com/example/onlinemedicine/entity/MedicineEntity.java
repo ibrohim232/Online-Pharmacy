@@ -24,6 +24,7 @@ import java.util.UUID;
 public class MedicineEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private UUID pharmacyId;
     @Column(nullable = false)
     private String description;
