@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,8 +24,9 @@ public class PharmacyEntity extends BaseEntity{
     private UUID ownerId;
     @Column(nullable = false)
     private String pharmacyName;
-    @ElementCollection
-    private Set<UUID> medicineId;
+
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = MedicineEntity.class)
+    private MedicineEntity medicineId;
 
     @OneToOne(fetch = FetchType.EAGER, targetEntity = Location.class)
     private Location location;

@@ -83,7 +83,7 @@ public class PharmacyService {
         return responseList;
     }
 
-//    public List<PharmacyResponseDto> getCloser
+
 
     public PharmacyResponseDto updateAndNotDeleted(UUID id, PharmacyRequestDto requestDto){
         PharmacyEntity pharmacyEntity = checkIsNotDeleted(id);
