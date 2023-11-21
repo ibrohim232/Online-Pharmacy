@@ -30,6 +30,10 @@ public class OrderService {
                         modelMapper.map(orderProductRequestDto,OrderProduct.class)
                 );
             }
+
+            //use stream groupedBy for sorting into pharmacy
+
+
             orderBucket.setOrderProducts(orderProducts);
             OrderBucket saved = orderRepository.save(orderBucket);
             OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);

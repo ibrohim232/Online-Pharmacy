@@ -56,22 +56,7 @@ public class MedicineService {
     public List<MedicineResponseDto> getAll(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(pageNumber, size);
         Page<MedicineEntity> page = this.repository.findAll(pageable);
-        return page.get().map((e) -> new MedicineResponseDto(
-                e.getId(),
-                e.getName(),
-                e.getPharmacyId(),
-                e.getDescription(),
-                e.getManufactured(),
-                e.getManufacturer(),
-                e.getAdviceType(),
-                e.getMeasurementType(),
-                e.getMedicineType(),
-                e.getBestBefore(),
-                e.getIssuedAt(),
-                e.getPrice(),
-                e.getCount(),
-                e.getCreated(),
-                e.getUpdated())).toList();
+        return page.get().map(this::entityToResponse).toList();
     }
 
     public List<MedicineResponseDto> findByNameOrderByHigher(String name) {

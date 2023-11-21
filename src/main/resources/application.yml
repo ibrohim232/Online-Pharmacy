@@ -1,6 +1,6 @@
 db_username: postgres
 db_password: EDGG3gD-2b*f5D434G4fCbDDG-23fB*2
-db_uriName: postgres
+db_uriName: railway
 
 
 spring:
