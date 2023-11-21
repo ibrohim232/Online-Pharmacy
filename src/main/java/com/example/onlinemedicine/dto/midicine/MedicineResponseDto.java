@@ -15,6 +15,7 @@ import java.util.UUID;
 public class MedicineResponseDto {
     private UUID id;
     private String name;
+    private UUID pharmacyId;
     private String description;
     private String manufactured;
     private String manufacturer;
