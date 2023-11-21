@@ -32,7 +32,9 @@ public class AuthController {
 
     @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('USER_GET')")
     @GetMapping("/get-all")
-    public List<UserResponseDto> getAll(@RequestParam(defaultValue = "1") int size, @RequestParam(defaultValue = "1") int page) {
+    public List<UserResponseDto> getAll(
+            @RequestParam(defaultValue = "1") int size,
+            @RequestParam(defaultValue = "1") int page) {
         return userService.getAll(page, size);
     }
 
