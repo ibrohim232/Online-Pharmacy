@@ -8,12 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class MedicineRequestDto {
     private String name;
+    private UUID pharmacyId;
     private String description;
     private String manufactured;
     private String manufacturer;

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -23,6 +24,8 @@ import java.time.LocalDateTime;
 public class MedicineEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private UUID pharmacyId;
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)
