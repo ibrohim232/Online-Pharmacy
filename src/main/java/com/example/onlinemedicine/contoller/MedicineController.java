@@ -49,7 +49,7 @@ public class MedicineController {
     }
 
     @GetMapping("/find-by-name")
-    public MedicineResponseDto findByName(@RequestParam String name) {
+    public  List<MedicineResponseDto>  findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
 

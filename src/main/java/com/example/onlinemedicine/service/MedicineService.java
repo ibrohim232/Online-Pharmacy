@@ -33,12 +33,13 @@ public class MedicineService {
                 medicineRequestDto.getPharmacyId());
         Optional<PharmacyEntity> pharmacyEntity = pharmacyRepository.findById(medicineRequestDto.getPharmacyId());
 
-        if (entity.isPresent() || pharmacyEntity.isPresent()) {
+        if (entity.isPresent() || pharmacyEntity.isEmpty()) {
             throw new RuntimeException();
         } else if (medicineRequestDto.getBestBefore().isBefore(medicineRequestDto.getIssuedAt())) {
             throw new RuntimeException();
         } else {
             MedicineEntity map = requestToEntity(medicineRequestDto);
+            map.setPharmacy(pharmacyEntity.get());
             this.repository.save(map);
             return entityToResponse(map);
         }
@@ -65,13 +66,13 @@ public class MedicineService {
     }
 
     public List<MedicineResponseDto> findByNameOrderByLower(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceDesc(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceAsc(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
-    public MedicineResponseDto findByName(String name) {
-        MedicineEntity medicineEntity = repository.findByName(name).orElseThrow();
-        return modelMapper.map(medicineEntity, MedicineResponseDto.class);
+    public List<MedicineResponseDto> findByName(String name) {
+        List<MedicineEntity> medicineEntities = repository.findByNameContaining(name);
+        return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
     private MedicineResponseDto entityToResponse(MedicineEntity medicineEntity) {

@@ -18,7 +18,7 @@ public class JwtRequestDto {
     private UserRole userRole;
     private List<Permissions> permissions;
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> authorities() {
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>(Set.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())));
         if (permissions != null) {
             simpleGrantedAuthorities.addAll(permissions.stream().map(

@@ -13,5 +13,5 @@ import java.util.UUID;
 @Data
 public class UpdateUserRoleDto {
     private UUID userId;
-    private List<UserRole> role;
+    private UserRole role;
 }

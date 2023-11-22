@@ -78,7 +78,9 @@ public class UserService {
 
     public UserResponseDto updateUserRole(UpdateUserRoleDto dto) {
         UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("user not found"));
-        user.setRoles(dto.getRole());
+        List<UserRole> roles = user.getRoles();
+        roles.add(dto.getRole());
+        user.setRoles(roles);
         repository.save(user);
         return mapEntityToRES(user);
     }
