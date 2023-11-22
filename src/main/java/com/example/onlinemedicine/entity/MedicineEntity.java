@@ -19,13 +19,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "medicines", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType"})
+        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType","pharmacy_id"})
 })
 public class MedicineEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private UUID pharmacyId;
+    @ManyToOne
+    private PharmacyEntity pharmacy;
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)

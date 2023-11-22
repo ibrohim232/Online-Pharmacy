@@ -2,7 +2,6 @@ package com.example.onlinemedicine.service.jwt;
 
 
 import com.example.onlinemedicine.dto.user.JwtRequestDto;
-import com.example.onlinemedicine.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -36,10 +35,11 @@ public class JwtService {
 
     public Map<String, Object> getAuthorities(JwtRequestDto jwtRequestDto) {
         return Map.of("roles",
-                jwtRequestDto.getAuthorities().stream()
+                jwtRequestDto.authorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList());
     }
+
 
     public Jws<Claims> extractToken(String token) {
         return Jwts.parserBuilder()
