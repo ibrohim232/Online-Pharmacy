@@ -16,12 +16,10 @@ public class OrderBucketResponseDto {
     private UUID id;
     private UUID ownerId;
     private Double price;
-    private Double deliveryPrice;
     private List<OrderProductResponseDto> orderProductResponseDtos;
     public OrderBucketResponseDto(OrderBucket orderBucket){
         this.id=orderBucket.getId();
         this.ownerId= orderBucket.getOwner().getId();
         this.price= orderBucket.getPrice();
-        this.deliveryPrice=orderBucket.getDeliveryPrice();
     }
 }

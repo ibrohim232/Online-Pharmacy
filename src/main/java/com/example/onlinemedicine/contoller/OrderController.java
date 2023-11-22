@@ -10,8 +10,12 @@ import io.swagger.v3.oas.annotations.links.Link;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +31,7 @@ public class OrderController {
     )
     @PostMapping("/save")
     @PreAuthorize("hasAnyRole('USER')")
-    public OrderBucketResponseDto save(@RequestBody OrderBucketRequestDto orderBucketRequestDto){
+    public List<OrderBucketResponseDto> save(@RequestBody OrderBucketRequestDto orderBucketRequestDto){
         return orderService.save(orderBucketRequestDto);
     }
     @Operation(
@@ -45,9 +49,9 @@ public class OrderController {
             security = @SecurityRequirement(name = "open", scopes = {"USER"})
     )
     @GetMapping("/get-all-by-id")
-    public List<OrderBucketResponseDto> getAllById(@RequestParam UUID id){
-        List<OrderBucketResponseDto> orderBucketResponseDtos = orderService.getAllById(id);
-        return orderBucketResponseDtos;
+    public List<OrderBucketResponseDto> getAllById(Principal principal){
+        UUID userId = UUID.fromString(principal.getName());
+        return orderService.getAllById(userId);
     }
     @Operation(
             description = "This API is used for deleting order by id",

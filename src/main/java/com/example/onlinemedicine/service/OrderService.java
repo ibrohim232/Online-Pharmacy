@@ -6,45 +6,58 @@ import com.example.onlinemedicine.dto.order.response.OrderBucketResponseDto;
 import com.example.onlinemedicine.dto.order.response.OrderProductResponseDto;
 import com.example.onlinemedicine.entity.OrderBucket;
 import com.example.onlinemedicine.entity.OrderProduct;
+import com.example.onlinemedicine.entity.PharmacyEntity;
+import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.OrderRepository;
+import com.example.onlinemedicine.repository.PharmacyRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final PharmacyRepository pharmacyRepository;
     private final ModelMapper  modelMapper;
 
-    public OrderBucketResponseDto save(OrderBucketRequestDto orderBucketRequestDto){
+    public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto){
+
         if (orderBucketRequestDto!=null&&orderBucketRequestDto.getOrderProductRequestDtos()!=null){
-            OrderBucket orderBucket = modelMapper.map(orderBucketRequestDto, OrderBucket.class);
-            List<OrderProduct> orderProducts=new ArrayList<>();
-            for (OrderProductRequestDto orderProductRequestDto : orderBucketRequestDto.getOrderProductRequestDtos()) {
-                orderProducts.add(
-                        modelMapper.map(orderProductRequestDto,OrderProduct.class)
-                );
+            List<OrderProductRequestDto> orderProductRequestDtos = orderBucketRequestDto.getOrderProductRequestDtos();
+
+            Map<UUID, List<OrderProductRequestDto>> ordersForPharmacies = orderProductRequestDtos.stream().collect(Collectors.groupingBy(OrderProductRequestDto::getPharmacyId));
+            List<OrderBucketResponseDto> orderBucketResponseDtos=new ArrayList<>();
+            for (Map.Entry<UUID, List<OrderProductRequestDto>> order : ordersForPharmacies.entrySet()) {
+                PharmacyEntity pharmacyEntity = pharmacyRepository.findById(order.getKey())
+                        .orElseThrow(() -> new DataNotFoundException("Pharmacy not found while setting order"));
+
+                OrderBucket orderBucket = modelMapper.map(orderBucketRequestDto, OrderBucket.class);
+                List<OrderProduct> orderProducts=new ArrayList<>();
+                for (OrderProductRequestDto orderProductRequestDto : orderBucketRequestDto.getOrderProductRequestDtos()) {
+                    orderProducts.add(
+                            modelMapper.map(orderProductRequestDto,OrderProduct.class)
+                    );
+                }
+                orderBucket.setOrderProducts(orderProducts);
+                pharmacyEntity.getMyOrders().add(orderBucket);
+                OrderBucket saved = orderRepository.save(orderBucket);
+
+                OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
+                List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
+                for (OrderProduct orderProduct : saved.getOrderProducts()) {
+                    orderProductResponseDtos.add(
+                            modelMapper.map(orderProduct, OrderProductResponseDto.class)
+                    );
+                }
+                orderBucketResponseDto.setOrderProductResponseDtos(orderProductResponseDtos);
+                orderBucketResponseDtos.add(orderBucketResponseDto);
             }
 
-            //use stream groupedBy for sorting into pharmacy
-
-
-            orderBucket.setOrderProducts(orderProducts);
-            OrderBucket saved = orderRepository.save(orderBucket);
-            OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
-            List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
-            for (OrderProduct orderProduct : saved.getOrderProducts()) {
-                orderProductResponseDtos.add(
-                        modelMapper.map(orderProduct, OrderProductResponseDto.class)
-                );
-            }
-            orderBucketResponseDto.setOrderProductResponseDtos(orderProductResponseDtos);
-            return orderBucketResponseDto;
+            return orderBucketResponseDtos;
         }
         throw new RuntimeException("Request is null");
 
