@@ -32,7 +32,8 @@ public class PharmacyEntity extends BaseEntity{
     private Location location;
     @OneToOne(fetch = FetchType.EAGER, targetEntity = Contact.class)
     private Contact contact;
-
+    @OneToMany
+    private List<OrderBucket> myOrders;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime openingTime;

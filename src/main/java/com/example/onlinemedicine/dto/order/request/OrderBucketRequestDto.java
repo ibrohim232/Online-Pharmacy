@@ -12,6 +12,5 @@ import java.util.UUID;
 public class OrderBucketRequestDto {
     private UUID ownerId;
     private Double price;
-    private Double deliveryPrice;
     private List<OrderProductRequestDto> orderProductRequestDtos;
 }
