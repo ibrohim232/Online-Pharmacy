@@ -15,7 +15,7 @@ import java.util.UUID;
 @Repository
 public interface MedicineRepository extends JpaRepository<MedicineEntity, UUID> {
     Optional<MedicineEntity> findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyId(String name, AdviceType adviceType, MeasurementType measurementType, MedicineType medicineType, UUID pharmacyId);
-
+    Optional<MedicineEntity> findByNameAndPharmacyId(String name,UUID pharmacyId);
     List<MedicineEntity> findByNameOrderByPriceDesc(String name);
 
     List<MedicineEntity> findByNameOrderByPriceAsc(String name);

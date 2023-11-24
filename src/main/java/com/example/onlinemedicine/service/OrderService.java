@@ -4,10 +4,12 @@ import com.example.onlinemedicine.dto.order.request.OrderBucketRequestDto;
 import com.example.onlinemedicine.dto.order.request.OrderProductRequestDto;
 import com.example.onlinemedicine.dto.order.response.OrderBucketResponseDto;
 import com.example.onlinemedicine.dto.order.response.OrderProductResponseDto;
+import com.example.onlinemedicine.entity.MedicineEntity;
 import com.example.onlinemedicine.entity.OrderBucket;
 import com.example.onlinemedicine.entity.OrderProduct;
 import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.exception.DataNotFoundException;
+import com.example.onlinemedicine.repository.MedicineRepository;
 import com.example.onlinemedicine.repository.OrderRepository;
 import com.example.onlinemedicine.repository.PharmacyRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final PharmacyRepository pharmacyRepository;
+    private final MedicineRepository medicineRepository;
     private final ModelMapper  modelMapper;
 
     public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto){
@@ -49,6 +52,9 @@ public class OrderService {
                 OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
                 List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
                 for (OrderProduct orderProduct : saved.getOrderProducts()) {
+                    MedicineEntity medicine = medicineRepository.findByNameAndPharmacyId(orderProduct.getMedicine().getName(), orderProduct.getMedicine().getPharmacy().getId())
+                            .orElseThrow(() -> new DataNotFoundException("Medicine not found while decrementing"));
+                    medicine.setCount(medicine.getCount()-orderProduct.getCount());
                     orderProductResponseDtos.add(
                             modelMapper.map(orderProduct, OrderProductResponseDto.class)
                     );
