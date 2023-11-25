@@ -3,6 +3,7 @@ package com.example.onlinemedicine.contoller;
 import com.example.onlinemedicine.dto.midicine.MedicineRequestDto;
 import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.service.MedicineService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping({"/medicine"})
+@RequestMapping("/medicine")
+@RequiredArgsConstructor
 public class MedicineController {
     private final MedicineService medicineService;
 
@@ -49,12 +51,23 @@ public class MedicineController {
     }
 
     @GetMapping("/find-by-name")
-    public  List<MedicineResponseDto>  findByName(@RequestParam String name) {
+    public List<MedicineResponseDto> findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
 
-
-    public MedicineController(final MedicineService medicineService) {
-        this.medicineService = medicineService;
+    @GetMapping("/increase-medicine-count")
+    public void increaseMedicineCount(@RequestParam UUID id) {
+        medicineService.increaseOrDecreaseMedicineCount(id, true);
     }
+
+    @GetMapping("/decrease-medicine-count")
+    public void decreaseMedicineCount(@RequestParam UUID id) {
+        medicineService.increaseOrDecreaseMedicineCount(id, false);
+    }
+    @GetMapping("/set-medicine-count")
+    public void setMedicineCount(@RequestParam UUID id,@RequestParam int count) {
+        medicineService.setMedicineCount(id,count);
+    }
+
+
 }
