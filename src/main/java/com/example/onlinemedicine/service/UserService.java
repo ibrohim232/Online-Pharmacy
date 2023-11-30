@@ -40,16 +40,16 @@ public class UserService {
     @Transactional
     public UserResponseDto singUp(UserRequestDto createReq) {
 
-        if (validation.isValidUserName(createReq.getUserName())) {
+        if (!validation.isValidUserName(createReq.getUserName())) {
             throw new WrongInputException("invalid username");
         }
-        if (validation.isValidPassword(createReq.getPassword())) {
+        if (!validation.isValidPassword(createReq.getPassword())) {
             throw new WrongInputException("invalid password");
         }
-        if (validation.isValidPhoneNumber(createReq.getPhoneNumber())) {
+        if (!validation.isValidPhoneNumber(createReq.getPhoneNumber())) {
             throw new WrongInputException("invalid phone number");
         }
-        if (validation.isValidEmail(createReq.getEmail())) {
+        if (!validation.isValidEmail(createReq.getEmail())) {
             throw new WrongInputException("invalid email");
         }
 
