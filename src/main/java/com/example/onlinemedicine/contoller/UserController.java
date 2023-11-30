@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.UUID;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +31,10 @@ public class UserController {
     @PostMapping("/change-permissions")
     public UserResponseDto changePermissions(@RequestBody UpdateUserPermissionsDto dto) {
         return userService.updateUserPermissions(dto);
+    }
+
+    @GetMapping("/me")
+    public UserResponseDto me(Principal principal) {
+        return userService.me(UUID.fromString(principal.getName()));
     }
 }
