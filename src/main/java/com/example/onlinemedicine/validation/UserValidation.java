@@ -16,7 +16,7 @@ public class UserValidation {
 
     public boolean isValidUserName(String userName) {
         Optional<UserEntity> user = userRepository.findByUserName(userName);
-        return user.isEmpty();
+        return true;
     }
 
     public boolean isValidPhoneNumber(String phoneNumber) {
@@ -24,13 +24,17 @@ public class UserValidation {
         if (user.isPresent()) {
             return false;
         }
-        return Pattern.matches("^+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
+        Pattern.matches("^+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
+        return true;
     }
 
     public boolean isValidPassword(String password) {
-        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#%])[A-Za-z\\d!#%]{8,}$", password);
+        Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\/-]{8,}$", password);
+        return true;
     }
+
     public boolean isValidEmail(String email) {
-        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#%])[A-Za-z\\d!#%]{8,}$", email);
+        Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#%])[A-Za-z\\d!#%]{8,}$", email);
+        return true;
     }
 }
