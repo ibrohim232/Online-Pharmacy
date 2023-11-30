@@ -1,6 +1,7 @@
 package com.example.onlinemedicine.repository;
 
 import com.example.onlinemedicine.entity.MedicineEntity;
+import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.entity.enums.AdviceType;
 import com.example.onlinemedicine.entity.enums.MeasurementType;
 import com.example.onlinemedicine.entity.enums.MedicineType;
@@ -13,10 +14,8 @@ import java.util.UUID;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<MedicineEntity, UUID> {
-
-    Optional<MedicineEntity> findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyId(String name, AdviceType adviceType, MeasurementType measurementType, MedicineType medicineType, UUID pharmacyId);
+    Optional<MedicineEntity> findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyIdAndManufacturerAndManufactured(String name, AdviceType adviceType, MeasurementType measurementType, MedicineType medicineType, UUID pharmacy_id, String manufacturer, String manufactured);
     Optional<MedicineEntity> findByNameAndPharmacyId(String name,UUID pharmacyId);
-
     List<MedicineEntity> findByNameOrderByPriceDesc(String name);
 
     List<MedicineEntity> findByNameOrderByPriceAsc(String name);
