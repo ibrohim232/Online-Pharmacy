@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @AllArgsConstructor
@@ -22,8 +23,8 @@ public class MedicineResponseDto {
     private AdviceType adviceType;
     private MeasurementType measurementType;
     private MedicineType medicineType;
-    private LocalDateTime bestBefore;
-    private LocalDateTime issuedAt;
+    private LocalDate bestBefore;
+    private LocalDate issuedAt;
     private Double price;
     private int count;
     private LocalDateTime created;
