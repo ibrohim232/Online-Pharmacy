@@ -29,12 +29,14 @@ public class UserValidation {
     }
 
     public boolean isValidPassword(String password) {
-        Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\/-]{8,}$", password);
-        return true;
+        return Pattern.matches("^(?=.*[0-9])"
+                + "(?=.*[a-z])(?=.*[A-Z])"
+                + "(?=.*[@#$%^&+=])"
+                + "(?=\\S+$).{8,20}$", password);
+
     }
 
     public boolean isValidEmail(String email) {
-        Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#%])[A-Za-z\\d!#%]{8,}$", email);
-        return true;
+        return Pattern.matches("^[a-zA-Z0-9_! #$%&'*+/=?`{|}~^. -]+@[a-zA-Z0-9. -]+$", email);
     }
 }
