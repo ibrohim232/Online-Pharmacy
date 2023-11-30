@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "medicines", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType","pharmacy_id"})
+        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType", "pharmacy_id", "manufactured", "manufacturer"})
 })
 public class MedicineEntity extends BaseEntity {
     @Column(nullable = false)
@@ -39,9 +40,9 @@ public class MedicineEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MedicineType medicineType;
     @Column(nullable = false)
-    private LocalDateTime bestBefore;
+    private LocalDate bestBefore;
     @Column(nullable = false)
-    private LocalDateTime issuedAt;
+    private LocalDate issuedAt;
     @Column(nullable = false)
     private Double price;
     @Column(nullable = false)
