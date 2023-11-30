@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -116,6 +117,10 @@ public class UserService {
 
     public JwtResponseDto generateToken(JwtRequestDto jwtRequestDto) {
         return new JwtResponseDto(jwtService.generateToken(jwtRequestDto));
+    }
+    public UserResponseDto me(UUID id){
+        UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+        return mapEntityToRES(userEntity);
     }
 
     protected UserResponseDto mapEntityToRES(UserEntity entity) {
