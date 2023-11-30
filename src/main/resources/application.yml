@@ -28,3 +28,5 @@ spring:
 jwt:
   expiry: 30000000
   secret: asdfghjkl;'';lkjhgfdsaqwertyuiop[[poiuytrewqzxcvbnm,.,mnbvcxz
+server:
+  port: 9090
