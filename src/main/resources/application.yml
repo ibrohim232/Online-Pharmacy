@@ -3,13 +3,8 @@ db_password: EDGG3gD-2b*f5D434G4fCbDDG-23fB*2
 db_uriName: railway
 
 spring:
-  data:
-    redis:
-      host: redis-18964.c281.us-east-1-2.ec2.cloud.redislabs.com
-      port: 18964
-      password: Fs2l5kn3oMIeJadkbRGC93N0mZbs9DCB
-      username: default
-   #   url: jdbc:redis://monorail.proxy.rlwy.net:21991/0
+  redis:
+      url: jdbc:redis://monorail.proxy.rlwy.net:16690
   mail:
     host: smtp.gmail.com
     port: 587
@@ -35,4 +30,4 @@ jwt:
   expiry: 30000000
   secret: asdfghjkl;'';lkjhgfdsaqwertyuiop[[poiuytrewqzxcvbnm,.,mnbvcxz
 server:
-  port: 9090
+  port: 9093

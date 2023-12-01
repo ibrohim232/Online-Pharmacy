@@ -12,7 +12,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfiguration {
    @Bean
    public JedisConnectionFactory jedisConnectionFactory(){
-       return new JedisConnectionFactory();
+      JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+      jedisConnectionFactory.setHostName("monorail.proxy.rlwy.net");
+      jedisConnectionFactory.setDatabase(0);
+      jedisConnectionFactory.setPassword("HppfO4opapGBcJH3J6LfJfFfIApB1bKG");
+      jedisConnectionFactory.setPort(16690);
+       return jedisConnectionFactory;
    }
    @Bean
     public RedisTemplate<String , EmailDto> redisTemplate(){

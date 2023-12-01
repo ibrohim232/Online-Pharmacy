@@ -2,6 +2,7 @@ package com.example.onlinemedicine.exceptionHandling;
 
 import com.example.onlinemedicine.exception.IncorrectPassword;
 import com.example.onlinemedicine.exception.TimeOut;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,12 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(TimeOut.class)
     public ResponseEntity<String> handleException(TimeOut ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+
+    }
+    @ExceptionHandler(RedisConnectionFailureException.class)
+    public ResponseEntity<String> handleException(RedisConnectionFailureException ex){
+        ex.printStackTrace();
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 
     }
