@@ -35,8 +35,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(columnDefinition = "boolean default false")
     private boolean isVerify;
     @Column(nullable = false)
-    private int code;
-
+    private int code;   
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
