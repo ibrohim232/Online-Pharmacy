@@ -34,7 +34,10 @@ public class SpringConfig {
             "/auth/generate-token",
             "/auth/get-verify-code",
             "/medicine/find-by-name-order-by-lower-price",
-            "/medicine/find-by-name-order-by-higher-price"
+            "/medicine/find-by-name-order-by-higher-price",
+            "/medicine/find-by-name",
+            "/email/**"
+
     };
 
     @Bean
