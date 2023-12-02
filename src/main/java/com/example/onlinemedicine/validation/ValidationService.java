@@ -33,7 +33,7 @@ public class ValidationService {
     public boolean checkingPhoneNumber(PharmacyEntity pharmacyEntity){
         Contact contact = pharmacyEntity.getContact();
         try {
-           return Pattern.matches("^+998((0-9){2}|[0-9]{2})[0-9]{7}$", contact.getPhoneNumber());
+           return Pattern.matches("\\+998([0-9]{2})[0-9]{7}$", contact.getPhoneNumber());
         }catch (NotCorrectPhoneNumber e){
             throw new NotCorrectPhoneNumber("Incorrect phone number");
         }

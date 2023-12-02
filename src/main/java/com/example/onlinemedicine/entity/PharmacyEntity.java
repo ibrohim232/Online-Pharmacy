@@ -25,12 +25,9 @@ public class PharmacyEntity extends BaseEntity{
     @Column(nullable = false)
     private String pharmacyName;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = MedicineEntity.class)
-    private MedicineEntity medicineId;
-
-    @OneToOne(fetch = FetchType.EAGER, targetEntity = Location.class)
+    @OneToOne(fetch = FetchType.EAGER, targetEntity = Location.class, cascade = CascadeType.ALL)
     private Location location;
-    @OneToOne(fetch = FetchType.EAGER, targetEntity = Contact.class)
+    @OneToOne(fetch = FetchType.EAGER, targetEntity = Contact.class, cascade = CascadeType.ALL)
     private Contact contact;
     @OneToMany
     private List<OrderBucket> myOrders;
