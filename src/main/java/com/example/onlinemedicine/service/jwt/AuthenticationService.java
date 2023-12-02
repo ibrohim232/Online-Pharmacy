@@ -1,5 +1,6 @@
 package com.example.onlinemedicine.service.jwt;
 
+import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.UserRepository;
 import com.example.onlinemedicine.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -20,7 +21,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     public void authenticate(Claims claims, HttpServletRequest request) {
         String userId = claims.getSubject();
-        userRepository.findById(UUID.fromString(userId)).orElseThrow();
+        userRepository.findById(UUID.fromString(userId)).orElseThrow(()-> new DataNotFoundException("USER NOT FOUND"));
         List<String> roles = (List<String>) claims.get("roles");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
