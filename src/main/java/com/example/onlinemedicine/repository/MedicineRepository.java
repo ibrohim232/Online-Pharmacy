@@ -19,7 +19,7 @@ public interface MedicineRepository extends JpaRepository<MedicineEntity, UUID> 
 
     List<MedicineEntity> findByNameOrderByPriceAsc(String name);
 
-   List<MedicineEntity> findByNameContaining(String name);
+   List<MedicineEntity> findByNameStartingWith(String name);
 
 
 }
