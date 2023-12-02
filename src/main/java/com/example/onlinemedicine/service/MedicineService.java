@@ -97,7 +97,7 @@ public class MedicineService {
     }
 
     public List<MedicineResponseDto> findByName(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameContaining(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameStartingWith(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
