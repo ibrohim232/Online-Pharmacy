@@ -29,6 +29,7 @@ public class MedicineService {
     private final MedicineRepository repository;
     private final MedicineValidator validator;
 
+
     public MedicineResponseDto create(MedicineRequestDto medicineRequestDto) {
         if (!validator.isUniqueMedicine(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType(), medicineRequestDto.getPharmacyId(), medicineRequestDto.getManufacturer(), medicineRequestDto.getManufactured())) {
             throw new DataAlreadyExistsException("Medicine already exists ");
@@ -96,12 +97,14 @@ public class MedicineService {
     }
 
     public List<MedicineResponseDto> findByName(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameStartingWith(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameContaining(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
     private MedicineResponseDto entityToResponse(MedicineEntity medicineEntity) {
-        return modelMapper.map(medicineEntity, MedicineResponseDto.class);
+        MedicineResponseDto map = modelMapper.map(medicineEntity, MedicineResponseDto.class);
+        map.setPharmacyId(medicineEntity.getPharmacy().getId());
+        return map;
     }
 
     private MedicineEntity requestToEntity(MedicineRequestDto medicineRequestDto) {

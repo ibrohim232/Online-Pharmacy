@@ -54,16 +54,17 @@ public class MedicineController {
     public List<MedicineResponseDto> findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
-
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
     @GetMapping("/increase-medicine-count")
     public void increaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, true);
     }
-
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
     @GetMapping("/decrease-medicine-count")
     public void decreaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, false);
     }
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
     @GetMapping("/set-medicine-count")
     public void setMedicineCount(@RequestParam UUID id,@RequestParam int count) {
         medicineService.setMedicineCount(id,count);
