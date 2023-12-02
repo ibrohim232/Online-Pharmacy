@@ -2,8 +2,9 @@ db_username: postgres
 db_password: EDGG3gD-2b*f5D434G4fCbDDG-23fB*2
 db_uriName: railway
 
-
 spring:
+  redis:
+      url: jdbc:redis://monorail.proxy.rlwy.net:16690
   mail:
     host: smtp.gmail.com
     port: 587
