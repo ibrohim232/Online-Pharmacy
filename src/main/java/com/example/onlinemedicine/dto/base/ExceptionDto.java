@@ -1,4 +1,4 @@
-package com.example.onlinemedicine.exception.response;
+package com.example.onlinemedicine.dto.base;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlreadyExistPharmacyResponse {
-
+public class ExceptionDto {
+    private String massage;
     private int status;
-    private String description;
-    private String error;
 }

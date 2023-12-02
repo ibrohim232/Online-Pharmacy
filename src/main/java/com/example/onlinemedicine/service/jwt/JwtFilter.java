@@ -1,5 +1,6 @@
 package com.example.onlinemedicine.service.jwt;
 
+import com.example.onlinemedicine.exception.TokenExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
@@ -25,8 +26,11 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         String token = authorization.substring(7);
-        Jws<Claims> claimsJws = jwtService.extractToken(token);
-        authenticationService.authenticate(claimsJws.getBody(), request);
+        if(jwtService.isTokenExpired(token)){
+            Jws<Claims> claimsJws = jwtService.extractToken(token);
+            authenticationService.authenticate(claimsJws.getBody(), request);
+        }
+       else throw new TokenExpiredException("Token is expired");
         filterChain.doFilter(request, response);
     }
 }

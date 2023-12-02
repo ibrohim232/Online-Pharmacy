@@ -29,51 +29,51 @@ public class PharmacyService {
     private final ValidationService validationService;
     private final ModelMapper modelMapper;
 
-    public PharmacyResponseDto create(PharmacyRequestDto requestDto){
+    public PharmacyResponseDto create(PharmacyRequestDto requestDto) {
         PharmacyEntity pharmacyEntity = requestToEntity(requestDto);
         boolean checkingForPharmacyLocation = validationService.checkingForLnLt(pharmacyEntity);
-        boolean checkedPhoneNumber = validationService.checkingPhoneNumber(pharmacyEntity);
-        boolean checkedEmail = validationService.checkingEmail(pharmacyEntity);
-        if (checkingForPharmacyLocation){
-            throw new AlreadyExistPharmacy("This pharmacy is exist");
+        boolean checkedPhoneNumber = validationService.checkingPhoneNumber(pharmacyEntity.getContact().getPhoneNumber());
+        boolean checkedEmail = validationService.checkingEmail(pharmacyEntity.getContact().getEmail());
+        if (checkingForPharmacyLocation) {
+            throw new DataAlreadyExistsException("This pharmacy is exist");
         }
-        if (!checkedPhoneNumber){
-            throw new NotCorrectPhoneNumber("You entered phone number incorrect");
+        if (!checkedPhoneNumber) {
+            throw new WrongInputException("You entered phone number incorrect");
         }
-        if (!checkedEmail){
-            throw new NotCorrectEmail("You entered invalid email");
+        if (!checkedEmail) {
+            throw new WrongInputException("You entered invalid email");
         }
 
         pharmacyRepository.save(pharmacyEntity);
         return entityToResponse(pharmacyEntity);
     }
 
-    public void delete(UUID id){
-        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new PharmacyNotFound("Pharmacy do not found"));
+    public void delete(UUID id) {
+        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Pharmacy do not found"));
 
         if (pharmacyEntity.isActive()) {
-            throw new NotExistPharmacy("This pharmacy is not exist");
+            throw new WrongInputException("This pharmacy is not exist");
         }
 
         pharmacyEntity.setActive(true);
         pharmacyRepository.save(pharmacyEntity);
     }
 
-    public PharmacyResponseDto getByIdAndNotDeleted(UUID id){
+    public PharmacyResponseDto getByIdAndNotDeleted(UUID id) {
         PharmacyEntity pharmacyEntity = checkIsNotDeleted(id);
-        if (Objects.isNull(pharmacyEntity)){
-            throw new NotExistPharmacy("This pharmacy is not exist");
+        if (Objects.isNull(pharmacyEntity)) {
+            throw new DataNotFoundException("This pharmacy is not exist");
         }
 
         return entityToResponse(pharmacyEntity);
     }
 
-    public PharmacyResponseDto getById(UUID id){
-        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new PharmacyNotFound("Pharmacy do not found"));
+    public PharmacyResponseDto getById(UUID id) {
+        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Pharmacy do not found"));
         return entityToResponse(pharmacyEntity);
     }
 
-    public List<PharmacyResponseDto> getAll(int page, int pageSize){
+    public List<PharmacyResponseDto> getAll(int page, int pageSize) {
         Pageable pageRequest = PageRequest.of(page, pageSize);
         List<PharmacyResponseDto> responseList = pharmacyRepository.findAll(pageRequest)
                 .stream()
@@ -84,12 +84,11 @@ public class PharmacyService {
     }
 
 
-
-    public PharmacyResponseDto updateAndNotDeleted(UUID id, PharmacyRequestDto requestDto){
+    public PharmacyResponseDto updateAndNotDeleted(UUID id, PharmacyRequestDto requestDto) {
         PharmacyEntity pharmacyEntity = checkIsNotDeleted(id);
 
-        if (Objects.isNull(pharmacyEntity)){
-            throw new NotExistPharmacy("This pharmacy is not exist");
+        if (Objects.isNull(pharmacyEntity)) {
+            throw new DataNotFoundException("This pharmacy is not exist");
         }
         modelMapper.map(requestDto, pharmacyEntity);
 
@@ -99,24 +98,23 @@ public class PharmacyService {
     }
 
 
-    private PharmacyEntity checkIsNotDeleted(UUID id){
-        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new PharmacyNotFound("Pharmacy do not found"));
+    private PharmacyEntity checkIsNotDeleted(UUID id) {
+        PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Pharmacy do not found"));
 
-        if (pharmacyEntity.isActive()){
+        if (pharmacyEntity.isActive()) {
             return null;
         }
         return pharmacyEntity;
     }
 
 
-    private PharmacyEntity requestToEntity(PharmacyRequestDto pharmacyRequestDto){
+    private PharmacyEntity requestToEntity(PharmacyRequestDto pharmacyRequestDto) {
         return modelMapper.map(pharmacyRequestDto, PharmacyEntity.class);
     }
 
-    private PharmacyResponseDto entityToResponse(PharmacyEntity pharmacyEntity){
-       return modelMapper.map(pharmacyEntity, PharmacyResponseDto.class);
+    private PharmacyResponseDto entityToResponse(PharmacyEntity pharmacyEntity) {
+        return modelMapper.map(pharmacyEntity, PharmacyResponseDto.class);
     }
-
 
 
 }
