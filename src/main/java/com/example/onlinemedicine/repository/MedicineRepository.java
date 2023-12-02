@@ -1,7 +1,6 @@
 package com.example.onlinemedicine.repository;
 
 import com.example.onlinemedicine.entity.MedicineEntity;
-import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.entity.enums.AdviceType;
 import com.example.onlinemedicine.entity.enums.MeasurementType;
 import com.example.onlinemedicine.entity.enums.MedicineType;

@@ -112,13 +112,15 @@ public class UserService {
     public void getVerifyCode(String email) {
         UserEntity userEntity = repository.findByEmail(email).orElseThrow();
         userEntity.setCode(random.nextInt(1000, 10000));
+        repository.save(userEntity);
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
     }
 
     public JwtResponseDto generateToken(JwtRequestDto jwtRequestDto) {
         return new JwtResponseDto(jwtService.generateToken(jwtRequestDto));
     }
-    public UserResponseDto me(UUID id){
+
+    public UserResponseDto me(UUID id) {
         UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
         return mapEntityToRES(userEntity);
     }

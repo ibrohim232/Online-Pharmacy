@@ -27,10 +27,10 @@ public class ValidationService {
 
         return false;
     }
-
     public boolean checkingPhoneNumber(String phoneNumber) {
 
         return Pattern.matches("^+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
+
     }
 
     public boolean checkingEmail(String email) {
