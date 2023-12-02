@@ -31,7 +31,7 @@ public class MedicineValidator {
     }
 
     public boolean isValidDate(LocalDate bestBefore, LocalDate issuedAt) {
-        return !bestBefore.isAfter(issuedAt) && !bestBefore.equals(issuedAt);
+        return !bestBefore.isBefore(issuedAt) && !bestBefore.equals(issuedAt);
     }
 
 }

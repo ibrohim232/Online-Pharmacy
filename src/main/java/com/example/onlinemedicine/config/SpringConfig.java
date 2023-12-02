@@ -23,7 +23,8 @@ public class SpringConfig {
     private final AuthenticationService authenticationService;
 
 
-    private final String[] WHITE_LIST = {"/auth/sign-up",
+    private final String[] WHITE_LIST = {
+            "/auth/sign-up",
             "/auth/sign-in",
             "/auth/verify",
             "/extract-token",
@@ -32,7 +33,11 @@ public class SpringConfig {
             "/user/extract-token",
             "/auth/generate-token",
             "/auth/get-verify-code",
+            "/medicine/find-by-name-order-by-lower-price",
+            "/medicine/find-by-name-order-by-higher-price",
+            "/medicine/find-by-name",
             "/email/**"
+
     };
 
     @Bean
@@ -41,7 +46,7 @@ public class SpringConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requestConfigurer -> {
                     requestConfigurer
-                            .requestMatchers(WHITE_LIST).permitAll()
+                            .requestMatchers( WHITE_LIST).permitAll()
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtFilter(jwtService, authenticationService),
