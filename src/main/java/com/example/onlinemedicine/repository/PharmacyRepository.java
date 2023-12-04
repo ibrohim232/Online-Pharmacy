@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface PharmacyRepository extends JpaRepository<PharmacyEntity, UUID> {
 
-    Optional<PharmacyEntity> getPharmacyEntityByLocation_LatitudeAndLocation_Longitude(String latitude, String longitude);
+    Optional<PharmacyEntity> getPharmacyEntityByLocation_LatitudeAndLocation_Longitude(double latitude, double longitude);
 
 //    @Query("select ph from  pharmacy ph where (ph.medicineId.name ilike :medicineName) and " +
 //            "ST_DWithin(" +
@@ -27,4 +27,11 @@ public interface PharmacyRepository extends JpaRepository<PharmacyEntity, UUID> 
 //            @Param("maxDistance") Double maxDistance,
 //            @Param("medicineName") String medicineName
 //    );
+@Query("SELECT p FROM pharmacy p WHERE " +
+        "SQRT((:latitude - p.location.latitude) * (:latitude - p.location.latitude) + " +
+        "(:longitude - p.location.longitude) * (:longitude - p.location.longitude)) * 111.32 <= :radius")
+List<PharmacyEntity> findPharmaciesWithinRadius(
+        @Param("latitude") double latitude,
+        @Param("longitude") double longitude,
+        @Param("radius") double radiusInKm);
 }

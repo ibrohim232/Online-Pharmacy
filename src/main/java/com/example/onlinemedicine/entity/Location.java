@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity(name = "location")
 public class Location extends BaseEntity {
     @Column(nullable = false, unique = true)
-    private String latitude;
+    private double latitude;
     @Column(nullable = false, unique = true)
-    private String longitude;
+    private double longitude;
 }
