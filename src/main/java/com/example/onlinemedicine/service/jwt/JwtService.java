@@ -1,7 +1,7 @@
 package com.example.onlinemedicine.service.jwt;
 
 
-import com.example.onlinemedicine.dto.user.JwtRequestDto;
+import com.example.onlinemedicine.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -22,20 +22,20 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(JwtRequestDto jwtRequestDto) {
+    public String generateToken(UserEntity user) {
         Date date = new Date();
         return Jwts.builder()
-                .setSubject(jwtRequestDto.getId().toString())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + expiry))
-                .addClaims(getAuthorities(jwtRequestDto))
+                .addClaims(getAuthorities(user))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Map<String, Object> getAuthorities(JwtRequestDto jwtRequestDto) {
+    public Map<String, Object> getAuthorities(UserEntity user) {
         return Map.of("roles",
-                jwtRequestDto.authorities().stream()
+                user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList());
     }
@@ -47,7 +47,8 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token);
     }
-    public boolean isTokenExpired(String token){
+
+    public boolean isTokenExpired(String token) {
         Jws<Claims> claimsJws = extractToken(token);
         Claims body = claimsJws.getBody();
         Date expiration = body.getExpiration();

@@ -54,16 +54,14 @@ public class UserService {
         }
 
         UserEntity user = mapCRToEntity(createReq);
-        ArrayList<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(UserRole.USER);
-        user.setRoles(userRoles);
+        user.setRoles(UserRole.USER);
         user.setCode(random.nextInt(1000, 10000));
         repository.save(user);
         notificationService.sendVerifyCode(user.getEmail(), user.getCode());
         return mapEntityToRES(user);
     }
 
-    public UserResponseDto singIn(SingIdDto singIdDto) {
+    public JwtResponseDto singIn(SingIdDto singIdDto) {
         try {
             UserEntity userEntity = repository.findByUserName(singIdDto.getUserName()).orElseThrow(() -> new DataNotFoundException("user not found"));
             if (!userEntity.isVerify()) {
@@ -71,7 +69,7 @@ public class UserService {
             }
             if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
                 throw new RuntimeException();
-            return mapEntityToRES(userEntity);
+            return new JwtResponseDto(jwtService.generateToken(userEntity));
         } catch (Exception e) {
             throw new WrongInputException("Username or password incorrect");
         }
@@ -95,9 +93,7 @@ public class UserService {
 
     public UserResponseDto updateUserRole(UpdateUserRoleDto dto) {
         UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("user not found"));
-        List<UserRole> roles = user.getRoles();
-        roles.add(dto.getRole());
-        user.setRoles(roles);
+        user.setRoles(dto.getRole());
         repository.save(user);
         return mapEntityToRES(user);
     }
@@ -115,10 +111,7 @@ public class UserService {
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
     }
 
-    public JwtResponseDto generateToken(JwtRequestDto jwtRequestDto) {
-        return new JwtResponseDto(jwtService.generateToken(jwtRequestDto));
-    }
-    public UserResponseDto me(UUID id){
+    public UserResponseDto me(UUID id) {
         UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
         return mapEntityToRES(userEntity);
     }
