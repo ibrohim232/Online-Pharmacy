@@ -135,10 +135,10 @@ public class PharmacyService {
         // This is a simple example
         double R = 6371; // Radius of Earth in kilometers
 
-        double lat1 = Math.toRadians(location1.getLatitude());
-        double lon1 = Math.toRadians(location1.getLongitude());
-        double lat2 = Math.toRadians(location2.getLatitude());
-        double lon2 = Math.toRadians(location2.getLongitude());
+        double lat1 = Math.toRadians(Double.parseDouble(location1.getLatitude()));
+        double lon1 = Math.toRadians(Double.parseDouble(location1.getLongitude()));
+        double lat2 = Math.toRadians(Double.parseDouble(location2.getLatitude()));
+        double lon2 = Math.toRadians(Double.parseDouble(location2.getLongitude()));
 
         double dLat = lat2 - lat1;
         double dLon = lon2 - lon1;

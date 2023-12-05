@@ -20,4 +20,5 @@ public class OrderProduct extends BaseEntity {
     private Double price;
     @ManyToOne(fetch = FetchType.EAGER)
     private OrderBucket orderBucket;
+
 }

@@ -20,4 +20,5 @@ public class OrderBucket extends BaseEntity {
     private List<OrderProduct> orderProducts;
     @ManyToOne
     private PharmacyEntity pharmacyEntity;
+
 }

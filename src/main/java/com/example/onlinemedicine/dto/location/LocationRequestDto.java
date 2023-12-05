@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LocationRequestDto {
     @Column(nullable = false)
-    private Double latitude;
+    private String latitude;
     @Column(nullable = false)
-    private Double longitude;
+    private String longitude;
 }

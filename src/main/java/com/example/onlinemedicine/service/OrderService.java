@@ -97,6 +97,7 @@ public class OrderService {
                         modelMapper.map(orderProduct, OrderProductResponseDto.class)
                 );
             }
+
             orderBucketResponseDto.setOrderProductResponseDtos(orderProductResponseDtos);
             orderBucketResponseDtos.add(orderBucketResponseDto);
         }
