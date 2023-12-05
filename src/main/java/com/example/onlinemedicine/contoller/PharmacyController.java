@@ -48,7 +48,7 @@ public class PharmacyController {
         return pharmacyResponseDto;
     }
 
-    @PreAuthorize(value = "(hasRole('OWNER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @PostMapping("/create-pharmacy")
     public PharmacyResponseDto create(@RequestBody PharmacyRequestDto requestDto){
         PharmacyResponseDto pharmacyResponseDto = service.create(requestDto);

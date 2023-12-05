@@ -2,6 +2,7 @@ package com.example.onlinemedicine.service;
 
 import com.example.onlinemedicine.dto.pharmacy.request.PharmacyRequestDto;
 import com.example.onlinemedicine.dto.pharmacy.response.PharmacyResponseDto;
+import com.example.onlinemedicine.entity.Location;
 import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.exception.*;
 import com.example.onlinemedicine.repository.PharmacyRepository;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -117,4 +115,39 @@ public class PharmacyService {
     }
 
 
+    private static List<PharmacyEntity> findPharmaciesWithinRadius(Location myLocation, double radiusInKm, List<PharmacyEntity> pharmacies) {
+        List<PharmacyEntity> pharmaciesWithinRadius = new ArrayList<>();
+
+        for (PharmacyEntity pharmacy : pharmacies) {
+            double distance = calculateHaversineDistance(myLocation, pharmacy.getLocation());
+
+            if (distance <= radiusInKm) {
+                pharmaciesWithinRadius.add(pharmacy);
+            }
+        }
+
+        return pharmaciesWithinRadius;
+    }
+
+    private static double calculateHaversineDistance(Location location1, Location location2) {
+        // Implementation of Haversine formula to calculate distance between two points on Earth
+        // You can find various implementations online or use a library for more accuracy
+        // This is a simple example
+        double R = 6371; // Radius of Earth in kilometers
+
+        double lat1 = Math.toRadians(Double.parseDouble(location1.getLatitude()));
+        double lon1 = Math.toRadians(Double.parseDouble(location1.getLongitude()));
+        double lat2 = Math.toRadians(Double.parseDouble(location2.getLatitude()));
+        double lon2 = Math.toRadians(Double.parseDouble(location2.getLongitude()));
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
+    }
 }

@@ -30,7 +30,7 @@ public class OrderController {
             security = @SecurityRequirement(name = "open", scopes = {"USER"})
     )
     @PostMapping("/save")
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public List<OrderBucketResponseDto> save(@RequestBody OrderBucketRequestDto orderBucketRequestDto){
         return orderService.save(orderBucketRequestDto);
     }

@@ -17,6 +17,6 @@ public enum Permissions {
     PHARMACY_DELETE,
     ORDER_CREATE,
     ORDER_GET,
-            ORDER_UPDATE,
+    ORDER_UPDATE,
     ORDER_DELETE
 }

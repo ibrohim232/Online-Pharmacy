@@ -54,14 +54,16 @@ public class UserService {
         }
 
         UserEntity user = mapCRToEntity(createReq);
-        user.setRoles(UserRole.USER);
+        ArrayList<UserRole> userRoles = new ArrayList<>();
+        userRoles.add(UserRole.USER);
+        user.setRoles(userRoles);
         user.setCode(random.nextInt(1000, 10000));
         repository.save(user);
         notificationService.sendVerifyCode(user.getEmail(), user.getCode());
         return mapEntityToRES(user);
     }
 
-    public JwtResponseDto singIn(SingIdDto singIdDto) {
+    public UserResponseDto singIn(SingIdDto singIdDto) {
         try {
             UserEntity userEntity = repository.findByUserName(singIdDto.getUserName()).orElseThrow(() -> new DataNotFoundException("user not found"));
             if (!userEntity.isVerify()) {
@@ -69,7 +71,7 @@ public class UserService {
             }
             if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
                 throw new RuntimeException();
-            return new JwtResponseDto(jwtService.generateToken(userEntity));
+            return mapEntityToRES(userEntity);
         } catch (Exception e) {
             throw new WrongInputException("Username or password incorrect");
         }
@@ -93,7 +95,9 @@ public class UserService {
 
     public UserResponseDto updateUserRole(UpdateUserRoleDto dto) {
         UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("user not found"));
-        user.setRoles(dto.getRole());
+        List<UserRole> roles = user.getRoles();
+        roles.add(dto.getRole());
+        user.setRoles(roles);
         repository.save(user);
         return mapEntityToRES(user);
     }
@@ -108,7 +112,12 @@ public class UserService {
     public void getVerifyCode(String email) {
         UserEntity userEntity = repository.findByEmail(email).orElseThrow();
         userEntity.setCode(random.nextInt(1000, 10000));
+        repository.save(userEntity);
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
+    }
+
+    public JwtResponseDto generateToken(JwtRequestDto jwtRequestDto) {
+        return new JwtResponseDto(jwtService.generateToken(jwtRequestDto));
     }
 
     public UserResponseDto me(UUID id) {
