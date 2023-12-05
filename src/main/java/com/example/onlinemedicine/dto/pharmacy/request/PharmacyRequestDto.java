@@ -1,6 +1,8 @@
 package com.example.onlinemedicine.dto.pharmacy.request;
 
 
+import com.example.onlinemedicine.dto.contact.request.ContactRequestDto;
+import com.example.onlinemedicine.dto.location.LocationRequestDto;
 import com.example.onlinemedicine.entity.Contact;
 import com.example.onlinemedicine.entity.Location;
 import jakarta.validation.constraints.NotBlank;
@@ -22,8 +24,8 @@ public class PharmacyRequestDto {
     @NotBlank
     private String pharmacyName;
     private Set<UUID> medicineId;
-    private Location location;
-    private Contact contact;
+    private LocationRequestDto location;
+    private ContactRequestDto contact;
     @NotBlank
     private LocalDateTime openingTime;
     @NotBlank

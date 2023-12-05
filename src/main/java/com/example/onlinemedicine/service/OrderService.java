@@ -4,14 +4,12 @@ import com.example.onlinemedicine.dto.order.request.OrderBucketRequestDto;
 import com.example.onlinemedicine.dto.order.request.OrderProductRequestDto;
 import com.example.onlinemedicine.dto.order.response.OrderBucketResponseDto;
 import com.example.onlinemedicine.dto.order.response.OrderProductResponseDto;
-import com.example.onlinemedicine.entity.MedicineEntity;
-import com.example.onlinemedicine.entity.OrderBucket;
-import com.example.onlinemedicine.entity.OrderProduct;
-import com.example.onlinemedicine.entity.PharmacyEntity;
+import com.example.onlinemedicine.entity.*;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.MedicineRepository;
 import com.example.onlinemedicine.repository.OrderRepository;
 import com.example.onlinemedicine.repository.PharmacyRepository;
+import com.example.onlinemedicine.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,10 +23,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PharmacyRepository pharmacyRepository;
     private final MedicineRepository medicineRepository;
+    private final UserRepository userRepository;
     private final ModelMapper  modelMapper;
 
     public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto){
-
+        UserEntity owner = userRepository.findById(orderBucketRequestDto.getOwnerId())
+                .orElseThrow(() -> new DataNotFoundException("Owner not found while adding new order"));
         if (orderBucketRequestDto!=null&&orderBucketRequestDto.getOrderProductRequestDtos()!=null){
             List<OrderProductRequestDto> orderProductRequestDtos = orderBucketRequestDto.getOrderProductRequestDtos();
 
@@ -41,18 +41,22 @@ public class OrderService {
                 OrderBucket orderBucket = modelMapper.map(orderBucketRequestDto, OrderBucket.class);
                 List<OrderProduct> orderProducts=new ArrayList<>();
                 for (OrderProductRequestDto orderProductRequestDto : orderBucketRequestDto.getOrderProductRequestDtos()) {
-                    orderProducts.add(
-                            modelMapper.map(orderProductRequestDto,OrderProduct.class)
-                    );
+                    OrderProduct orderProduct = modelMapper.map(orderProductRequestDto, OrderProduct.class);
+                    orderProduct.setMedicine(medicineRepository.findById(orderProductRequestDto.getMedicineId())
+                            .orElseThrow(() -> new DataNotFoundException("Medicine not found")));
+
+                    orderProducts.add(orderProduct);
                 }
                 orderBucket.setOrderProducts(orderProducts);
                 pharmacyEntity.getMyOrders().add(orderBucket);
+                orderBucket.setPharmacyEntity(pharmacyEntity);
+                orderBucket.setOwner(owner);
                 OrderBucket saved = orderRepository.save(orderBucket);
 
                 OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
                 List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
                 for (OrderProduct orderProduct : saved.getOrderProducts()) {
-                    MedicineEntity medicine = medicineRepository.findByNameAndPharmacyId(orderProduct.getMedicine().getName(), orderProduct.getMedicine().getPharmacy().getId())
+                    MedicineEntity medicine = medicineRepository.findById(orderProduct.getMedicine().getId())
                             .orElseThrow(() -> new DataNotFoundException("Medicine not found while decrementing"));
                     medicine.setCount(medicine.getCount()-orderProduct.getCount());
                     orderProductResponseDtos.add(

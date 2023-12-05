@@ -15,8 +15,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity(name = "location")
 public class Location extends BaseEntity {
-    @Column(nullable = false, unique = true)
-    private String latitude;
-    @Column(nullable = false, unique = true)
-    private String longitude;
+
+    @Column(columnDefinition = "double precision")
+    private Double latitude;
+    @Column(columnDefinition = "double precision")
+    private Double longitude;
 }
