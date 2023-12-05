@@ -46,6 +46,7 @@ public class OrderService {
                             .orElseThrow(() -> new DataNotFoundException("Medicine not found")));
 
                     orderProducts.add(orderProduct);
+                    orderProduct.setOrderBucket(orderBucket);
                 }
                 orderBucket.setOrderProducts(orderProducts);
                 pharmacyEntity.getMyOrders().add(orderBucket);
@@ -54,14 +55,15 @@ public class OrderService {
                 OrderBucket saved = orderRepository.save(orderBucket);
 
                 OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
+                orderBucketResponseDto.setOwnerId(owner.getId());
                 List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
                 for (OrderProduct orderProduct : saved.getOrderProducts()) {
                     MedicineEntity medicine = medicineRepository.findById(orderProduct.getMedicine().getId())
                             .orElseThrow(() -> new DataNotFoundException("Medicine not found while decrementing"));
                     medicine.setCount(medicine.getCount()-orderProduct.getCount());
-                    orderProductResponseDtos.add(
-                            modelMapper.map(orderProduct, OrderProductResponseDto.class)
-                    );
+                    OrderProductResponseDto orderProductResponseDto = modelMapper.map(orderProduct, OrderProductResponseDto.class);
+                    orderProductResponseDto.setMedicineId(medicine.getId());
+                    orderProductResponseDtos.add(orderProductResponseDto);
                 }
                 orderBucketResponseDto.setOrderProductResponseDtos(orderProductResponseDtos);
                 orderBucketResponseDtos.add(orderBucketResponseDto);
