@@ -27,11 +27,11 @@ public interface PharmacyRepository extends JpaRepository<PharmacyEntity, UUID> 
 //            @Param("maxDistance") Double maxDistance,
 //            @Param("medicineName") String medicineName
 //    );
-@Query("SELECT p FROM pharmacy p WHERE " +
-        "SQRT((:latitude - p.location.latitude) * (:latitude - p.location.latitude) + " +
-        "(:longitude - p.location.longitude) * (:longitude - p.location.longitude)) * 111.32 <= :radius")
-List<PharmacyEntity> findPharmaciesWithinRadius(
-        @Param("latitude") double latitude,
-        @Param("longitude") double longitude,
-        @Param("radius") double radiusInKm);
+//@Query("SELECT p FROM pharmacy p WHERE " +
+//        "SQRT((:latitude - p.location.latitude) * (:latitude - p.location.latitude) + " +
+//        "(:longitude - p.location.longitude) * (:longitude - p.location.longitude)) * 111.32 <= :radius")
+//List<PharmacyEntity> findPharmaciesWithinRadius(
+//        @Param("latitude") double latitude,
+//        @Param("longitude") double longitude,
+//        @Param("radius") double radiusInKm);
 }

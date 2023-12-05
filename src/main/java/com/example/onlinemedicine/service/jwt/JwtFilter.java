@@ -30,7 +30,9 @@ public class JwtFilter extends OncePerRequestFilter {
             Jws<Claims> claimsJws = jwtService.extractToken(token);
             authenticationService.authenticate(claimsJws.getBody(), request);
         }
-       else throw new TokenExpiredException("Token is expired");
+        else {
+            throw new TokenExpiredException("Token is expired");
+        }
         filterChain.doFilter(request, response);
     }
 }

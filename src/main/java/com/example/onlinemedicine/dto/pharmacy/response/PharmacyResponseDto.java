@@ -1,6 +1,8 @@
 package com.example.onlinemedicine.dto.pharmacy.response;
 
 
+import com.example.onlinemedicine.dto.contact.response.ContactResponseDto;
+import com.example.onlinemedicine.dto.location.LocationResponseDto;
 import com.example.onlinemedicine.entity.Contact;
 import com.example.onlinemedicine.entity.Location;
 import lombok.AllArgsConstructor;
@@ -20,8 +22,8 @@ public class PharmacyResponseDto extends RepresentationModel<PharmacyResponseDto
     private UUID id;
     private String pharmacyName;
     private Set<UUID> medicineId;
-    private Location location;
-    private Contact contact;
+    private LocationResponseDto location;
+    private ContactResponseDto contact;
     private LocalDateTime openingTime;
     private LocalDateTime closingTime;
 
