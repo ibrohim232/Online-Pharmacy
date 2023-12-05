@@ -40,7 +40,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
-        simpleGrantedAuthorities.add(new SimpleGrantedAuthority("role" + this.roles));
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + this.roles));
         if (permissions != null) {
             simpleGrantedAuthorities.addAll(permissions.stream().map(
                             permission -> new SimpleGrantedAuthority(permission.name())

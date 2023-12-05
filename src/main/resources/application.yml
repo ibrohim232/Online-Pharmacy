@@ -1,6 +1,6 @@
 db_username: postgres
-db_password: EDGG3gD-2b*f5D434G4fCbDDG-23fB*2
-db_uriName: railway
+db_password: 232
+db_uriName: postgres
 
 spring:
   redis:
@@ -17,7 +17,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${db_username}
     password: ${db_password}
-    url: jdbc:postgresql://monorail.proxy.rlwy.net:10806/${db_uriName}
+    url: jdbc:postgresql://localhost:5432/${db_uriName}
   jpa:
     hibernate:
       ddl-auto: update

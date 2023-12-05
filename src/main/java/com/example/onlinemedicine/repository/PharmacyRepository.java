@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface PharmacyRepository extends JpaRepository<PharmacyEntity, UUID> {
 
-    Optional<PharmacyEntity> getPharmacyEntityByLocation_LatitudeAndLocation_Longitude(String latitude, String longitude);
+    Optional<PharmacyEntity> getPharmacyEntityByLocation_LatitudeAndLocation_Longitude(Double latitude, Double longitude);
 
     @Query("select ph from  pharmacy ph where (ph.medicineId.name ilike :medicineName) and " +
             "ST_DWithin(" +
