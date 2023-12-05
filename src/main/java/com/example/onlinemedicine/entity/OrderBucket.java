@@ -16,8 +16,9 @@ public class OrderBucket extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity owner;
     private Double price;
-    @OneToMany(mappedBy = "orderBucket", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "orderBucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderProduct> orderProducts;
     @ManyToOne
     private PharmacyEntity pharmacyEntity;
+
 }
