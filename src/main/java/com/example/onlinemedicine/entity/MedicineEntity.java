@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "medicines", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType", "pharmacy_id", "manufactured", "manufacturer"})
+        @UniqueConstraint(columnNames = {"name", "adviceType", "measurementType", "medicineType", "pharmacy_id", "manufactured", "manufacturer","price"})
 })
 public class MedicineEntity extends BaseEntity {
     @Column(nullable = false)

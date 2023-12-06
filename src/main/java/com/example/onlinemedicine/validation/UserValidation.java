@@ -15,8 +15,7 @@ public class UserValidation {
 
 
     public boolean isValidUserName(String userName) {
-        Optional<UserEntity> user = userRepository.findByUserName(userName);
-        return true;
+        return userRepository.findByUserName(userName).isEmpty();
     }
 
     public boolean isValidPhoneNumber(String phoneNumber) {
@@ -37,6 +36,10 @@ public class UserValidation {
     }
 
     public boolean isValidEmail(String email) {
+        Optional<UserEntity> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return false;
+        }
         return Pattern.matches("^[a-zA-Z0-9_! #$%&'*+/=?`{|}~^. -]+@[a-zA-Z0-9. -]+$", email);
     }
 }
