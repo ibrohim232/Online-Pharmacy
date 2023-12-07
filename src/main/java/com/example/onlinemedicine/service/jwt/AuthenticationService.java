@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     public void authenticate(Claims claims, HttpServletRequest request) {
         String userId = claims.getSubject();
-        //userRepository.findById(UUID.fromString(userId)).orElseThrow(()-> new DataNotFoundException("USER NOT FOUND"));
+        userRepository.findById(UUID.fromString(userId)).orElseThrow(()-> new DataNotFoundException("USER NOT FOUND"));
         List<String> roles = (List<String>) claims.get("roles");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
