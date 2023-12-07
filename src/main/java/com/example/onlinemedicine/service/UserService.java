@@ -41,44 +41,39 @@ public class UserService {
     public UserResponseDto singUp(UserRequestDto createReq) {
 
         if (!validation.isValidUserName(createReq.getUserName())) {
-            throw new WrongInputException("invalid username");
+            throw new WrongInputException("INVALID USERNAME");
         }
         if (!validation.isValidPassword(createReq.getPassword())) {
-            throw new WrongInputException("invalid password");
+            throw new WrongInputException("INVALID PASSWORD");
         }
         if (!validation.isValidPhoneNumber(createReq.getPhoneNumber())) {
-            throw new WrongInputException("invalid phone number");
+            throw new WrongInputException("INVALID  PHONE NUMBER");
         }
         if (!validation.isValidEmail(createReq.getEmail())) {
-            throw new WrongInputException("invalid email");
+            throw new WrongInputException("INVALID EMAIL");
         }
 
         UserEntity user = mapCRToEntity(createReq);
-        ArrayList<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(UserRole.USER);
-        user.setRoles(userRoles);
+        user.setRoles(UserRole.USER);
         user.setCode(random.nextInt(1000, 10000));
         repository.save(user);
         notificationService.sendVerifyCode(user.getEmail(), user.getCode());
         return mapEntityToRES(user);
     }
 
-    public UserResponseDto singIn(SingIdDto singIdDto) {
-        try {
-            UserEntity userEntity = repository.findByUserName(singIdDto.getUserName()).orElseThrow(() -> new DataNotFoundException("user not found"));
-            if (!userEntity.isVerify()) {
-                throw new WrongInputException("isValidate is false");
-            }
-            if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
-                throw new RuntimeException();
-            return mapEntityToRES(userEntity);
-        } catch (Exception e) {
-            throw new WrongInputException("Username or password incorrect");
+    public JwtResponseDto singIn(SingIdDto singIdDto) {
+        UserEntity userEntity = repository.findByUserName(singIdDto.getUserName()).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
+        if (!userEntity.isVerify()) {
+            throw new WrongInputException("isValidate is false");
+        } else if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
+            throw new WrongInputException("PASSWORD INCORRECT");
+        else {
+            return new JwtResponseDto(jwtService.generateToken(userEntity));
         }
     }
 
     public boolean verify(String email, int code) {
-        UserEntity user = repository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("user not found"));
+        UserEntity user = repository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
         if (user.getCode() == code) {
             user.setVerify(true);
             repository.save(user);
@@ -94,34 +89,29 @@ public class UserService {
     }
 
     public UserResponseDto updateUserRole(UpdateUserRoleDto dto) {
-        UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("user not found"));
-        List<UserRole> roles = user.getRoles();
-        roles.add(dto.getRole());
-        user.setRoles(roles);
+        UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
+        user.setRoles(dto.getRole());
         repository.save(user);
         return mapEntityToRES(user);
     }
 
     public UserResponseDto updateUserPermissions(UpdateUserPermissionsDto dto) {
-        UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("user not found"));
+        UserEntity user = repository.findById(dto.getUserId()).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
         user.setPermissions(dto.getPermissions());
         repository.save(user);
         return mapEntityToRES(user);
     }
 
     public void getVerifyCode(String email) {
-        UserEntity userEntity = repository.findByEmail(email).orElseThrow();
+        UserEntity userEntity = repository.findByEmail(email).orElseThrow(() -> new WrongInputException("USER NOT FOUND"));
         userEntity.setCode(random.nextInt(1000, 10000));
         repository.save(userEntity);
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
     }
 
-    public JwtResponseDto generateToken(JwtRequestDto jwtRequestDto) {
-        return new JwtResponseDto(jwtService.generateToken(jwtRequestDto));
-    }
 
     public UserResponseDto me(UUID id) {
-        UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+        UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
         return mapEntityToRES(userEntity);
     }
 

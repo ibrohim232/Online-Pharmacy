@@ -27,7 +27,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String phoneNumber;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private List<UserRole> roles;
+    private UserRole roles;
     @Enumerated(value = EnumType.STRING)
     private List<Permissions> permissions;
     @Column(unique = true)
@@ -35,14 +35,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(columnDefinition = "boolean default false")
     private boolean isVerify;
     @Column(nullable = false)
-    private int code;   
+    private int code;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
-        simpleGrantedAuthorities.addAll(
-                roles.stream().map(userRole -> new SimpleGrantedAuthority(userRole.name())).toList()
-        );
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + this.roles));
         if (permissions != null) {
             simpleGrantedAuthorities.addAll(permissions.stream().map(
                             permission -> new SimpleGrantedAuthority(permission.name())

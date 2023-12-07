@@ -4,7 +4,7 @@ db_uriName: railway
 
 spring:
   redis:
-      url: jdbc:redis://monorail.proxy.rlwy.net:16690
+    url: jdbc:redis://monorail.proxy.rlwy.net:16690
   mail:
     host: smtp.gmail.com
     port: 587
@@ -33,7 +33,7 @@ server:
   port: 9090
 
 logging:
-    level:
-      org:
-        hibernate:
-          SQL=DEBUG:
+  level:
+    org:
+      hibernate:
+        SQL=DEBUG:
