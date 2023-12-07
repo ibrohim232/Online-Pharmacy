@@ -31,15 +31,15 @@ public class MedicineService {
 
 
     public MedicineResponseDto create(MedicineRequestDto medicineRequestDto) {
-        if (!validator.isUniqueMedicine(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType(), medicineRequestDto.getPharmacyId(), medicineRequestDto.getManufacturer(), medicineRequestDto.getManufactured())) {
-            throw new DataAlreadyExistsException("Medicine already exists ");
+        if (!validator.isUniqueMedicine(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType(), medicineRequestDto.getPharmacyId(), medicineRequestDto.getManufacturer(), medicineRequestDto.getManufactured(), medicineRequestDto.getPrice())) {
+            throw new DataAlreadyExistsException("MEDICINE ALREADY EXISTS");
         }
         if (!validator.isValidDate(medicineRequestDto.getBestBefore(), medicineRequestDto.getIssuedAt())) {
             throw new WrongInputException("dori eski");
         }
         Optional<PharmacyEntity> pharmacyEntity = pharmacyRepository.findById(medicineRequestDto.getPharmacyId());
         if (pharmacyEntity.isEmpty()) {
-            throw new DataNotFoundException("Pharmacy not found");
+            throw new DataNotFoundException("PHARMACY NOT FOUND");
         }
         MedicineEntity map = requestToEntity(medicineRequestDto);
         map.setPharmacy(pharmacyEntity.get());
@@ -50,7 +50,7 @@ public class MedicineService {
     public void increaseOrDecreaseMedicineCount(UUID medicineId, boolean increase) {
         Optional<MedicineEntity> medicine = repository.findById(medicineId);
         if (medicine.isEmpty()) {
-            throw new DataNotFoundException("Medicine not found");
+            throw new DataNotFoundException("MEDICINE NOT FOUND");
         }
         MedicineEntity medicineEntity = medicine.get();
         if (increase) {
@@ -64,7 +64,7 @@ public class MedicineService {
     public void setMedicineCount(UUID medicineId, int count) {
         Optional<MedicineEntity> medicine = repository.findById(medicineId);
         if (medicine.isEmpty()) {
-            throw new DataNotFoundException("Medicine not found");
+            throw new DataNotFoundException("MEDICINE NOT FOUND");
         }
         MedicineEntity medicineEntity = medicine.get();
         medicineEntity.setCount(count);
@@ -72,7 +72,7 @@ public class MedicineService {
     }
 
     public MedicineResponseDto findById(UUID id) {
-        MedicineEntity medicineEntity = this.repository.findById(id).orElseThrow();
+        MedicineEntity medicineEntity = this.repository.findById(id).orElseThrow(() -> new WrongInputException("MEDICINE NOT FOUND"));
         return entityToResponse(medicineEntity);
     }
 
@@ -87,17 +87,17 @@ public class MedicineService {
     }
 
     public List<MedicineResponseDto> findByNameOrderByHigher(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceDesc(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameStartingWithIgnoreCaseOrderByPriceDesc(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
     public List<MedicineResponseDto> findByNameOrderByLower(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameOrderByPriceAsc(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameStartingWithIgnoreCaseOrderByPriceAsc(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 
     public List<MedicineResponseDto> findByName(String name) {
-        List<MedicineEntity> medicineEntities = repository.findByNameStartingWith(name);
+        List<MedicineEntity> medicineEntities = repository.findByNameStartingWithIgnoreCase(name);
         return medicineEntities.stream().map(this::entityToResponse).toList();
     }
 

@@ -21,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public UserResponseDto singIn(@RequestBody SingIdDto singIdDto) {
+    public JwtResponseDto singIn(@RequestBody SingIdDto singIdDto) {
         return userService.singIn(singIdDto);
     }
 
@@ -43,8 +43,4 @@ public class AuthController {
         userService.getVerifyCode(email);
     }
 
-    @PostMapping("/generate-token")
-    public JwtResponseDto generateToken(@RequestBody JwtRequestDto jwtRequestDto) {
-        return userService.generateToken(jwtRequestDto);
-    }
 }

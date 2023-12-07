@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,9 +23,9 @@ public class MedicineValidator {
                                     MedicineType medicineType,
                                     UUID pharmacyId,
                                     String manufacturer,
-                                    String manufactured) {
-        Optional<MedicineEntity> medicine = repository.findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyIdAndManufacturerAndManufactured(
-                name, adviceType, measurementType, medicineType, pharmacyId, manufacturer, manufactured);
+                                    String manufactured,Double price) {
+        Optional<MedicineEntity> medicine = repository.findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyIdAndManufacturerAndManufacturedAndPrice(
+                name, adviceType, measurementType, medicineType, pharmacyId, manufacturer, manufactured,price);
         return medicine.isEmpty();
     }
 

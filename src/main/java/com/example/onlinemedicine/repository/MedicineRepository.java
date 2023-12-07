@@ -13,13 +13,13 @@ import java.util.UUID;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<MedicineEntity, UUID> {
-    Optional<MedicineEntity> findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyIdAndManufacturerAndManufactured(String name, AdviceType adviceType, MeasurementType measurementType, MedicineType medicineType, UUID pharmacy_id, String manufacturer, String manufactured);
-    Optional<MedicineEntity> findByNameAndPharmacyId(String name,UUID pharmacyId);
-    List<MedicineEntity> findByNameOrderByPriceDesc(String name);
+    Optional<MedicineEntity> findByNameAndAdviceTypeAndMeasurementTypeAndMedicineTypeAndPharmacyIdAndManufacturerAndManufacturedAndPrice(String name, AdviceType adviceType, MeasurementType measurementType, MedicineType medicineType, UUID pharmacy_id, String manufacturer, String manufactured, Double price);
 
-    List<MedicineEntity> findByNameOrderByPriceAsc(String name);
+    List<MedicineEntity> findByNameStartingWithIgnoreCaseOrderByPriceDesc(String name);
 
-   List<MedicineEntity> findByNameStartingWith(String name);
+    List<MedicineEntity> findByNameStartingWithIgnoreCaseOrderByPriceAsc(String name);
+
+    List<MedicineEntity> findByNameStartingWithIgnoreCase(String name);
 
 
 }
