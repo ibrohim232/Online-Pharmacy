@@ -20,8 +20,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PharmacyEntity extends BaseEntity{
 
-
-    private UUID ownerId;
+    @ManyToOne
+    private UserEntity ownerId;
     @Column(nullable = false)
     private String pharmacyName;
 

@@ -29,7 +29,7 @@ public class PharmacyController {
 
     private final PharmacyService service;
 
-    @PreAuthorize(value = "(hasRole('OWNER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "(hasRole('SUPER_USER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
     @GetMapping("/get-all")
     public List<PharmacyResponseDto> getAll(
             @RequestParam(defaultValue = "1") int page,
