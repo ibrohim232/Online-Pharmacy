@@ -4,8 +4,10 @@ import com.example.onlinemedicine.dto.pharmacy.request.PharmacyRequestDto;
 import com.example.onlinemedicine.dto.pharmacy.response.PharmacyResponseDto;
 import com.example.onlinemedicine.entity.Location;
 import com.example.onlinemedicine.entity.PharmacyEntity;
+import com.example.onlinemedicine.entity.UserEntity;
 import com.example.onlinemedicine.exception.*;
 import com.example.onlinemedicine.repository.PharmacyRepository;
+import com.example.onlinemedicine.repository.UserRepository;
 import com.example.onlinemedicine.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,6 +27,7 @@ public class PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
     private final ValidationService validationService;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     public PharmacyResponseDto create(PharmacyRequestDto requestDto) {
@@ -107,7 +110,12 @@ public class PharmacyService {
 
 
     private PharmacyEntity requestToEntity(PharmacyRequestDto pharmacyRequestDto) {
-        return modelMapper.map(pharmacyRequestDto, PharmacyEntity.class);
+        PharmacyEntity pharmacyEntity = modelMapper.map(pharmacyRequestDto, PharmacyEntity.class);
+        UserEntity owner = userRepository.findById(pharmacyRequestDto.getOwnerId())
+                .orElseThrow(() -> new DataNotFoundException("user not found while setting owner to pharmacy."));
+        pharmacyEntity.setOwner(owner);
+        return pharmacyEntity;
+
     }
 
     private PharmacyResponseDto entityToResponse(PharmacyEntity pharmacyEntity) {

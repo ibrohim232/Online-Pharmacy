@@ -16,19 +16,19 @@ import java.util.UUID;
 public class MedicineController {
     private final MedicineService medicineService;
 
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping({"/get-all"})
     public List<MedicineResponseDto> getAll(@RequestParam(defaultValue = "1") int size, @RequestParam(defaultValue = "1") int page) {
         return this.medicineService.getAll(page, size);
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @PostMapping({"/create"})
     public MedicineResponseDto create(@RequestBody MedicineRequestDto medicineRequestDto) {
         return this.medicineService.create(medicineRequestDto);
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+
     @GetMapping({"/find-by-id"})
     public MedicineResponseDto findById(@RequestParam UUID id) {
         return this.medicineService.findById(id);
@@ -54,17 +54,17 @@ public class MedicineController {
     public List<MedicineResponseDto> findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/increase-medicine-count")
     public void increaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, true);
     }
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/decrease-medicine-count")
     public void decreaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, false);
     }
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/set-medicine-count")
     public void setMedicineCount(@RequestParam UUID id,@RequestParam int count) {
         medicineService.setMedicineCount(id,count);
