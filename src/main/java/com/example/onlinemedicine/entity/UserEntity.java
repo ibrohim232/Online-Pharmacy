@@ -10,17 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @AllArgsConstructor
-@Entity
 @NoArgsConstructor
+@Entity
 @Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails {
-    {
-        this.role = UserRole.USER;
-    }
 
     private String fullName;
     @Column(unique = true)
@@ -29,8 +25,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String password;
     @Column(unique = true)
     private String phoneNumber;
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole role;
+    private UserRole roles;
     @Enumerated(value = EnumType.STRING)
     private List<Permissions> permissions;
     @Column(unique = true)
@@ -40,10 +37,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private int code;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>(Set.of(new SimpleGrantedAuthority("ROLE_" + role.name())));
+        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + this.roles));
         if (permissions != null) {
             simpleGrantedAuthorities.addAll(permissions.stream().map(
                             permission -> new SimpleGrantedAuthority(permission.name())
