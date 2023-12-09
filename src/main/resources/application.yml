@@ -1,7 +1,13 @@
 db_username: postgres
 db_password: EDGG3gD-2b*f5D434G4fCbDDG-23fB*2
 db_uriName: railway
-
+server:
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: G26Dorixona
+    keyStoreType: PKCS12
+    keyAlias: myapp
+  port: 9090
 spring:
   redis:
     url: jdbc:redis://monorail.proxy.rlwy.net:16690
@@ -29,8 +35,8 @@ spring:
 jwt:
   expiry: 30000000
   secret: asdfghjkl;'';lkjhgfdsaqwertyuiop[[poiuytrewqzxcvbnm,.,mnbvcxz
-server:
-  port: 9090
+
+
 
 logging:
   level:
