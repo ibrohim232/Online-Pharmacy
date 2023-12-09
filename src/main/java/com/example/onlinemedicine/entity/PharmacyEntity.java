@@ -21,7 +21,7 @@ import java.util.UUID;
 public class PharmacyEntity extends BaseEntity{
 
     @ManyToOne
-    private UserEntity ownerId;
+    private UserEntity owner;
     @Column(nullable = false)
     private String pharmacyName;
 

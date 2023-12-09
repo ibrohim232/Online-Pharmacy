@@ -36,6 +36,7 @@ public class SpringConfig {
             "/medicine/find-by-name-order-by-lower-price",
             "/medicine/find-by-name-order-by-higher-price",
             "/medicine/find-by-name",
+            "/medicine/find-by-id",
             "/email/**"
 
     };
