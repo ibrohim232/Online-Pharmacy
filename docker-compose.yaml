@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  pharmacy:
+    container_name: pharmacy-container
+    build:
+      dockerfile: ./build/libs/Online-Medicine-0.0.1-SNAPSHOT.jar
+    ports:
+      - "9090:9090"
+    depends_on:
+      - postgres
+    environment:
+      DB_USER: pharmacy_user
+      DB_NAME: pharmacy
+      DB_PASSWORD: G26Dorixona
+      DB_HOST: postgres_db
+  postgres_db:
+    image: postgres
+    container_name: postgres-container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: G26Dorixona
+      POSTGRES_USER: pharmacy_user
+      POSTGRES_DB: pharmacy
+    volumes:
+     - pg_data:/var/lib/postgresql/data
+volumes:
+  pg_data: {}
+
+
+
