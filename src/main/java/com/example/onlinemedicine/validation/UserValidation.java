@@ -23,8 +23,7 @@ public class UserValidation {
         if (user.isPresent()) {
             return false;
         }
-        Pattern.matches("^+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
-        return true;
+        return Pattern.matches("^//+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
     }
 
     public boolean isValidPassword(String password) {
