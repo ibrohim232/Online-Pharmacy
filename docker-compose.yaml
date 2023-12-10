@@ -4,19 +4,20 @@ services:
   pharmacy:
     container_name: pharmacy-container
     build:
-      dockerfile: ./build/libs/Online-Medicine-0.0.1-SNAPSHOT.jar
+      dockerfile: Dockerfile
     ports:
       - "9090:9090"
     depends_on:
-      - postgres
+      - postgres_db
     environment:
       DB_USER: pharmacy_user
       DB_NAME: pharmacy
       DB_PASSWORD: G26Dorixona
       DB_HOST: postgres_db
+      DB_PORT: 5432
   postgres_db:
-    image: postgres
-    container_name: postgres-container
+    image: postgres:latest
+    container_name: postgres-db
     ports:
       - "5432:5432"
     environment:

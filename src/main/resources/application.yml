@@ -1,7 +1,4 @@
-db_username: ${DB_USER:postgres}
-db_password: ${DB_PASSWORD:EDGG3gD-2b*f5D434G4fCbDDG-23fB*2}
-db_uriName: ${DB_NAME:railway}
-db_host: ${DB_HOST:monorail.proxy.rlwy.net:10806}
+
 server:
   ssl:
     key-store: classpath:keystore.p12
@@ -22,9 +19,9 @@ spring:
       mjaail.smtp.auth: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: ${db_username}
-    password: ${db_password}
-    url: jdbc:postgresql://${db_host}/${db_uriName}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:EDGG3gD-2b*f5D434G4fCbDDG-23fB*2}
+    url: jdbc:postgresql://${DB_HOST:monorail.proxy.rlwy.net:${DB_PORT:10806}}/${DB_NAME:railway}
   jpa:
     hibernate:
       ddl-auto: update
