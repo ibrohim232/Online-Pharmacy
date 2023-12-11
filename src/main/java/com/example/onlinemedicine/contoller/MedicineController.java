@@ -6,7 +6,9 @@ import com.example.onlinemedicine.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,10 +24,10 @@ public class MedicineController {
         return this.medicineService.getAll(page, size);
     }
 
-    @PreAuthorize("hasRole('SUPER_USER')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping({"/create"})
-    public MedicineResponseDto create(@RequestBody MedicineRequestDto medicineRequestDto) {
-        return this.medicineService.create(medicineRequestDto);
+    public MedicineResponseDto create(@RequestPart("dto") MedicineRequestDto medicineRequestDto, @RequestPart("file") MultipartFile file) throws IOException {
+        return this.medicineService.create(medicineRequestDto, file);
     }
 
 
@@ -54,20 +56,23 @@ public class MedicineController {
     public List<MedicineResponseDto> findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
+
     @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/increase-medicine-count")
     public void increaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, true);
     }
+
     @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/decrease-medicine-count")
     public void decreaseMedicineCount(@RequestParam UUID id) {
         medicineService.increaseOrDecreaseMedicineCount(id, false);
     }
+
     @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/set-medicine-count")
-    public void setMedicineCount(@RequestParam UUID id,@RequestParam int count) {
-        medicineService.setMedicineCount(id,count);
+    public void setMedicineCount(@RequestParam UUID id, @RequestParam int count) {
+        medicineService.setMedicineCount(id, count);
     }
 
 

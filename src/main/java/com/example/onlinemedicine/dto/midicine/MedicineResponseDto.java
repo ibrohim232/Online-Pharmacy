@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
@@ -29,4 +30,5 @@ public class MedicineResponseDto {
     private int count;
     private LocalDateTime created;
     private LocalDateTime updated;
+    private byte[] imageData;
 }
