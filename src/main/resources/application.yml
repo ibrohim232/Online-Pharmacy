@@ -19,9 +19,9 @@ spring:
       mjaail.smtp.auth: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:EDGG3gD-2b*f5D434G4fCbDDG-23fB*2}
-    url: jdbc:postgresql://${DB_HOST:monorail.proxy.rlwy.net}:${DB_PORT:10806}/${DB_NAME:railway}
+    username: ${DB_USER:pharmacy_user}
+    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:localhost:${DB_PORT:5432}}/${DB_NAME:pharmacy}
   jpa:
     hibernate:
       ddl-auto: update

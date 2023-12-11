@@ -12,7 +12,7 @@ services:
     environment:
       DB_USER: pharmacy_user
       DB_NAME: pharmacy
-      DB_PASSWORD: G26Dorixona
+      DB_PASSWORD: postgres
       DB_HOST: postgres_db
       DB_PORT: 5432
   postgres_db:
@@ -21,7 +21,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: G26Dorixona
+      POSTGRES_PASSWORD: postgres
       POSTGRES_USER: pharmacy_user
       POSTGRES_DB: pharmacy
     volumes:
