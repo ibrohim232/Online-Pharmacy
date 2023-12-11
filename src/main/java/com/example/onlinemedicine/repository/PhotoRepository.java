@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface PhotoRepository extends JpaRepository<PhotoEntity, UUID> {
     Optional<PhotoEntity> findByMedicineId(UUID uuid);
 
+    Optional<PhotoEntity> findByName(String fileName);
 }

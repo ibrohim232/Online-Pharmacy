@@ -3,7 +3,11 @@ package com.example.onlinemedicine.contoller;
 import com.example.onlinemedicine.dto.midicine.MedicineRequestDto;
 import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.service.MedicineService;
+import com.example.onlinemedicine.service.PhotoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MedicineController {
     private final MedicineService medicineService;
+    private final PhotoService photoService;
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping({"/get-all"})
@@ -73,6 +78,16 @@ public class MedicineController {
     @GetMapping("/set-medicine-count")
     public void setMedicineCount(@RequestParam UUID id, @RequestParam int count) {
         medicineService.setMedicineCount(id, count);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
+        byte[] imageData = photoService.downloadImage(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+
     }
 
 
