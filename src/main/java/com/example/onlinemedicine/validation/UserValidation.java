@@ -23,7 +23,6 @@ public class UserValidation {
         if (user.isPresent()) {
             return false;
         }
-        return true;
         return Pattern.matches("^\\+998((0-9){2}|[0-9]{2})[0-9]{7}$", phoneNumber);
     }
 
