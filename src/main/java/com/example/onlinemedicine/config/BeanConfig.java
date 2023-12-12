@@ -48,4 +48,5 @@ public class BeanConfig {
                         .license(new License().name("License of API")
                                 .url("API license URL")));
     }
+
 }
