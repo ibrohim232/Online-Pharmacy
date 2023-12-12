@@ -24,7 +24,7 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost:${DB_PORT:5432}}/${DB_NAME:pharmacy}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
