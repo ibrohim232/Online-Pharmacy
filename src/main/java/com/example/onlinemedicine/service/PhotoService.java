@@ -2,6 +2,7 @@ package com.example.onlinemedicine.service;
 
 import com.example.onlinemedicine.entity.MedicineEntity;
 import com.example.onlinemedicine.entity.PhotoEntity;
+import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.method.P;
@@ -14,6 +15,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.Deflater;
@@ -28,7 +30,7 @@ public class PhotoService {
     private final String fileStorage = "src\\main\\resources\\uploads";
     private final Path fileStoragePath = Paths.get(fileStorage).toAbsolutePath().normalize();
 
-    public void uploadImageToFileSystem(MultipartFile file, MedicineEntity medicine) throws IOException {
+    public String uploadImageToFileSystem(MultipartFile file, MedicineEntity medicine) throws IOException {
         String originalFilename = file.getOriginalFilename();
         PhotoEntity attachment = new PhotoEntity();
         attachment.setMedicine(medicine);
@@ -45,19 +47,20 @@ public class PhotoService {
             attachment.setFilePath(targetLocation.toAbsolutePath().toString());
         }
         repository.save(attachment);
+        return attachment.getFilePath();
     }
 
-    public byte[] downloadImageFromFileSystem(UUID medicineId) throws IOException {
-        Optional<PhotoEntity> fileData = repository.findByMedicineId(medicineId);
-        String filePath = fileData.get().getFilePath();
-        byte[] images = Files.readAllBytes(new File(filePath).toPath());
-        return images;
+    public String downloadImageFromFileSystem(UUID medicineId) throws IOException {
+        PhotoEntity photoNotFound = repository.findByMedicineId(medicineId).orElseThrow(() -> new DataNotFoundException("PHOTO NOT FOUND"));
+        return photoNotFound.getFilePath();
     }
 
-    public byte[] downloadImage(String fileName) throws IOException {
-        Optional<PhotoEntity> fileData = repository.findByName(fileName);
-        String filePath=fileData.get().getFilePath();
-        byte[] images = Files.readAllBytes(new File(filePath).toPath());
-        return images;
+    public String downloadImage(String filePath) throws IOException {
+        filePath = fileStorage + "/" + filePath;
+        Path path = Paths.get(filePath);
+        if (Files.exists(path)) {
+            return path.toString();
+        }
+        throw new DataNotFoundException("PHOTO NOT FOUND");
     }
 }

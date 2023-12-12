@@ -4,7 +4,11 @@ import com.example.onlinemedicine.dto.midicine.MedicineRequestDto;
 import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.service.MedicineService;
 import com.example.onlinemedicine.service.PhotoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,33 +66,10 @@ public class MedicineController {
         return medicineService.findByName(name);
     }
 
-    @PreAuthorize("hasRole('SUPER_USER')")
-    @GetMapping("/increase-medicine-count")
-    public void increaseMedicineCount(@RequestParam UUID id) {
-        medicineService.increaseOrDecreaseMedicineCount(id, true);
-    }
-
-    @PreAuthorize("hasRole('SUPER_USER')")
-    @GetMapping("/decrease-medicine-count")
-    public void decreaseMedicineCount(@RequestParam UUID id) {
-        medicineService.increaseOrDecreaseMedicineCount(id, false);
-    }
 
     @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/set-medicine-count")
     public void setMedicineCount(@RequestParam UUID id, @RequestParam int count) {
         medicineService.setMedicineCount(id, count);
     }
-
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
-        byte[] imageData = photoService.downloadImage(fileName);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
-
-    }
-
-
 }

@@ -47,22 +47,8 @@ public class MedicineService {
         MedicineEntity map = requestToEntity(medicineRequestDto);
         map.setPharmacy(pharmacyEntity.get());
         this.repository.save(map);
-        photoService.uploadImageToFileSystem(file, map);
+        String photoPath = photoService.uploadImageToFileSystem(file, map);
         return entityToResponse(map);
-    }
-
-    public void increaseOrDecreaseMedicineCount(UUID medicineId, boolean increase) {
-        Optional<MedicineEntity> medicine = repository.findById(medicineId);
-        if (medicine.isEmpty()) {
-            throw new DataNotFoundException("MEDICINE NOT FOUND");
-        }
-        MedicineEntity medicineEntity = medicine.get();
-        if (increase) {
-            medicineEntity.setCount(medicineEntity.getCount() + 1);
-        } else {
-            medicineEntity.setCount(medicineEntity.getCount() - 1);
-        }
-        repository.save(medicineEntity);
     }
 
     public void setMedicineCount(UUID medicineId, int count) {
@@ -109,7 +95,7 @@ public class MedicineService {
         MedicineResponseDto map = modelMapper.map(medicineEntity, MedicineResponseDto.class);
         map.setPharmacyId(medicineEntity.getPharmacy().getId());
         try {
-            map.setImageData(photoService.downloadImageFromFileSystem(medicineEntity.getId()));
+            map.setPhotoPath(photoService.downloadImageFromFileSystem(medicineEntity.getId()));
         } catch (IOException ignored) {
 
         }
