@@ -24,7 +24,7 @@ spring:
     url: jdbc:postgresql://${DB_HOST:monorail.proxy.rlwy.net}:${DB_PORT:10806}/${DB_NAME:railway}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
