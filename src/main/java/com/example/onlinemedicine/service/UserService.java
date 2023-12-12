@@ -12,6 +12,7 @@ import com.example.onlinemedicine.service.jwt.AuthenticationService;
 import com.example.onlinemedicine.service.jwt.JwtService;
 import com.example.onlinemedicine.validation.UserValidation;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -68,9 +69,19 @@ public class UserService {
         } else if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
             throw new WrongInputException("PASSWORD INCORRECT");
         else {
-            return new JwtResponseDto(jwtService.generateToken(userEntity));
+            return new JwtResponseDto(jwtService.generateToken(userEntity), jwtService.refreshToken(userEntity));
         }
     }
+
+    public String refreshToken(String refreshToken){
+        Jws<Claims> claimsJws = jwtService.extractToken(refreshToken);
+        String userId = claimsJws.getBody().getSubject();
+        UserEntity user = repository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        return jwtService.generateToken(user);
+    }
+
+
 
     public boolean verify(String email, int code) {
         UserEntity user = repository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
@@ -108,6 +119,7 @@ public class UserService {
         repository.save(userEntity);
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
     }
+
 
 
     public UserResponseDto me(UUID id) {

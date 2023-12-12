@@ -25,6 +25,11 @@ public class AuthController {
         return userService.singIn(singIdDto);
     }
 
+    @PostMapping("/refresh-token")
+    public String refreshToken(@RequestParam String refreshToken){
+      return userService.refreshToken(refreshToken);
+    }
+
     @PostMapping("/verify")
     public boolean verify(@RequestParam String email, @RequestParam int code) {
         return userService.verify(email, code);
