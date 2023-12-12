@@ -16,7 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,9 +30,10 @@ public class MedicineService {
     private final PharmacyRepository pharmacyRepository;
     private final MedicineRepository repository;
     private final MedicineValidator validator;
+    private final PhotoService photoService;
 
 
-    public MedicineResponseDto create(MedicineRequestDto medicineRequestDto) {
+    public MedicineResponseDto create(MedicineRequestDto medicineRequestDto, MultipartFile file) throws IOException {
         if (!validator.isUniqueMedicine(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType(), medicineRequestDto.getPharmacyId(), medicineRequestDto.getManufacturer(), medicineRequestDto.getManufactured(), medicineRequestDto.getPrice())) {
             throw new DataAlreadyExistsException("MEDICINE ALREADY EXISTS");
         }
@@ -44,21 +47,8 @@ public class MedicineService {
         MedicineEntity map = requestToEntity(medicineRequestDto);
         map.setPharmacy(pharmacyEntity.get());
         this.repository.save(map);
+        String photoPath = photoService.uploadImageToFileSystem(file, map);
         return entityToResponse(map);
-    }
-
-    public void increaseOrDecreaseMedicineCount(UUID medicineId, boolean increase) {
-        Optional<MedicineEntity> medicine = repository.findById(medicineId);
-        if (medicine.isEmpty()) {
-            throw new DataNotFoundException("MEDICINE NOT FOUND");
-        }
-        MedicineEntity medicineEntity = medicine.get();
-        if (increase) {
-            medicineEntity.setCount(medicineEntity.getCount() + 1);
-        } else {
-            medicineEntity.setCount(medicineEntity.getCount() - 1);
-        }
-        repository.save(medicineEntity);
     }
 
     public void setMedicineCount(UUID medicineId, int count) {
@@ -104,6 +94,11 @@ public class MedicineService {
     private MedicineResponseDto entityToResponse(MedicineEntity medicineEntity) {
         MedicineResponseDto map = modelMapper.map(medicineEntity, MedicineResponseDto.class);
         map.setPharmacyId(medicineEntity.getPharmacy().getId());
+        try {
+            map.setPhotoPath(photoService.downloadImageFromFileSystem(medicineEntity.getId()));
+        } catch (IOException ignored) {
+
+        }
         return map;
     }
 

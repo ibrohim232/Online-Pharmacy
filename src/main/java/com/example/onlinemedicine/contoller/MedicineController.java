@@ -3,10 +3,20 @@ package com.example.onlinemedicine.contoller;
 import com.example.onlinemedicine.dto.midicine.MedicineRequestDto;
 import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.service.MedicineService;
+import com.example.onlinemedicine.service.PhotoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MedicineController {
     private final MedicineService medicineService;
+    private final PhotoService photoService;
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping({"/get-all"})
@@ -22,10 +33,10 @@ public class MedicineController {
         return this.medicineService.getAll(page, size);
     }
 
-    @PreAuthorize("hasRole('SUPER_USER')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping({"/create"})
-    public MedicineResponseDto create(@RequestBody MedicineRequestDto medicineRequestDto) {
-        return this.medicineService.create(medicineRequestDto);
+    public MedicineResponseDto create(@RequestPart("dto") MedicineRequestDto medicineRequestDto, @RequestPart("file") MultipartFile file) throws IOException {
+        return this.medicineService.create(medicineRequestDto, file);
     }
 
 
@@ -54,21 +65,11 @@ public class MedicineController {
     public List<MedicineResponseDto> findByName(@RequestParam String name) {
         return medicineService.findByName(name);
     }
-    @PreAuthorize("hasRole('SUPER_USER')")
-    @GetMapping("/increase-medicine-count")
-    public void increaseMedicineCount(@RequestParam UUID id) {
-        medicineService.increaseOrDecreaseMedicineCount(id, true);
-    }
-    @PreAuthorize("hasRole('SUPER_USER')")
-    @GetMapping("/decrease-medicine-count")
-    public void decreaseMedicineCount(@RequestParam UUID id) {
-        medicineService.increaseOrDecreaseMedicineCount(id, false);
-    }
+
+
     @PreAuthorize("hasRole('SUPER_USER')")
     @GetMapping("/set-medicine-count")
-    public void setMedicineCount(@RequestParam UUID id,@RequestParam int count) {
-        medicineService.setMedicineCount(id,count);
+    public void setMedicineCount(@RequestParam UUID id, @RequestParam int count) {
+        medicineService.setMedicineCount(id, count);
     }
-
-
 }
