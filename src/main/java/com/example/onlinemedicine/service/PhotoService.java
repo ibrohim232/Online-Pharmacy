@@ -4,6 +4,7 @@ import com.example.onlinemedicine.entity.MedicineEntity;
 import com.example.onlinemedicine.entity.PhotoEntity;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.PhotoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ public class PhotoService {
 
     private final Path fileStoragePath = Paths.get(fileStorage).toAbsolutePath().normalize();
 
+    @Transactional
     public String uploadImageToFileSystem(MultipartFile file, MedicineEntity medicine) throws IOException {
         String originalFilename = file.getOriginalFilename();
         PhotoEntity attachment = new PhotoEntity();
