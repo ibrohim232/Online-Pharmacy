@@ -5,29 +5,27 @@ import com.example.onlinemedicine.entity.PhotoEntity;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
 public class PhotoService {
     private final PhotoRepository repository;
-    private final String fileStorage = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "photos";
+
+    // Use a configurable environment variable for file storage path
+    private final String fileStorage = System.getenv("FILE_STORAGE_PATH") != null ?
+            System.getenv("FILE_STORAGE_PATH") :
+            "src" + File.separator + "main" + File.separator + "resources" + File.separator + "photos";
+
     private final Path fileStoragePath = Paths.get(fileStorage).toAbsolutePath().normalize();
 
     public String uploadImageToFileSystem(MultipartFile file, MedicineEntity medicine) throws IOException {
@@ -56,7 +54,7 @@ public class PhotoService {
     }
 
     public String downloadImage(String filePath) throws IOException {
-        filePath = fileStorage + "/" + filePath;
+        filePath = fileStorage + File.separator + filePath;
         Path path = Paths.get(filePath);
         if (Files.exists(path)) {
             return path.toString();
