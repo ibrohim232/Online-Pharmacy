@@ -27,7 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class PhotoService {
     private final PhotoRepository repository;
-    private final String fileStorage = "src\\main\\resources\\uploads";
+    private final String fileStorage = "src\\main\\resources\\photos";
     private final Path fileStoragePath = Paths.get(fileStorage).toAbsolutePath().normalize();
 
     public String uploadImageToFileSystem(MultipartFile file, MedicineEntity medicine) throws IOException {
