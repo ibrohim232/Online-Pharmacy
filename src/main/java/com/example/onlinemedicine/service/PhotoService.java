@@ -10,10 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.UUID;
 
 @Service
@@ -21,10 +18,9 @@ import java.util.UUID;
 public class PhotoService {
     private final PhotoRepository repository;
 
-    // Use a configurable environment variable for file storage path
-    private final String fileStorage = System.getenv("FILE_STORAGE_PATH") != null ?
-            System.getenv("FILE_STORAGE_PATH") :
-            "src" + File.separator + "main" + File.separator + "resources" + File.separator + "photos";
+
+    private final String separator = FileSystems.getDefault().getSeparator();
+    private final String fileStorage = "src" + separator + "main" + separator + "resources" + separator + "photos";
 
     private final Path fileStoragePath = Paths.get(fileStorage).toAbsolutePath().normalize();
 
@@ -34,8 +30,9 @@ public class PhotoService {
         attachment.setMedicine(medicine);
         attachment.setName(originalFilename);
         try {
+            assert originalFilename != null;
             Path targetLocation = fileStoragePath.resolve(originalFilename);
-            Files.copy(file.getInputStream(), Path.of(targetLocation+File.separator));
+            Files.copy(file.getInputStream(), targetLocation);
             attachment.setFilePath(targetLocation.toAbsolutePath().toString());
         } catch (FileAlreadyExistsException e) {
             String fileName = originalFilename.substring(0, originalFilename.lastIndexOf(".")) + medicine.getId()
