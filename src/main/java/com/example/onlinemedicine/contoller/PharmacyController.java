@@ -22,8 +22,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pharmacy")
+//@SecurityRequirement(name = "BearerAuthentication")
 //@PreAuthorize(value = "hasAnyRole('OWNER', 'SUPER_ADMIN')")
-@SecurityRequirement(name = "BearerAuthentication")
 //@Profile(value = )
 public class PharmacyController {
 
