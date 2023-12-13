@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class MedicineService {
     private final MedicineValidator validator;
     private final PhotoService photoService;
 
-
+    @Transactional
     public MedicineResponseDto create(MedicineRequestDto medicineRequestDto, MultipartFile file) throws IOException {
         if (!validator.isUniqueMedicine(medicineRequestDto.getName(), medicineRequestDto.getAdviceType(), medicineRequestDto.getMeasurementType(), medicineRequestDto.getMedicineType(), medicineRequestDto.getPharmacyId(), medicineRequestDto.getManufacturer(), medicineRequestDto.getManufactured(), medicineRequestDto.getPrice())) {
             throw new DataAlreadyExistsException("MEDICINE ALREADY EXISTS");

@@ -37,7 +37,7 @@ public class PhotoService {
         attachment.setName(originalFilename);
         try {
             Path targetLocation = fileStoragePath.resolve(originalFilename);
-            Files.copy(file.getInputStream(), targetLocation);
+            Files.copy(file.getInputStream(), Path.of(targetLocation+File.separator));
             attachment.setFilePath(targetLocation.toAbsolutePath().toString());
         } catch (FileAlreadyExistsException e) {
             String fileName = originalFilename.substring(0, originalFilename.lastIndexOf(".")) + medicine.getId()
