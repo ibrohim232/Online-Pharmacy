@@ -24,40 +24,22 @@ import java.util.UUID;
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
-    @Operation(
-            description = "This API is used for creating orders in the database",
-            method = "Post method is supported",
-            security = @SecurityRequirement(name = "open", scopes = {"USER"})
-    )
+
     @PostMapping("/save")
     @PreAuthorize("hasRole('USER')")
     public List<OrderBucketResponseDto> save(@RequestBody OrderBucketRequestDto orderBucketRequestDto){
         return orderService.save(orderBucketRequestDto);
     }
-    @Operation(
-            description = "This API is used for getting all orders in the database",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "open", scopes = {"USER"})
-    )
+
     @GetMapping("/get-all")
     public List<OrderBucketResponseDto> getALl(){
         return orderService.getAll();
     }
-    @Operation(
-            description = "This API is used for getting all orders by user id",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "open", scopes = {"USER"})
-    )
     @GetMapping("/get-all-by-id")
     public List<OrderBucketResponseDto> getAllById(Principal principal){
         UUID userId = UUID.fromString(principal.getName());
         return orderService.getAllById(userId);
     }
-    @Operation(
-            description = "This API is used for deleting order by id",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"USER"})
-    )
     @DeleteMapping
     public OrderBucketResponseDto delete(@RequestParam UUID id){
        return orderService.delete(id);

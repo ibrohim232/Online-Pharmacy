@@ -29,7 +29,7 @@ public class OrderService {
     public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto){
         UserEntity owner = userRepository.findById(orderBucketRequestDto.getOwnerId())
                 .orElseThrow(() -> new DataNotFoundException("Owner not found while adding new order"));
-        if (orderBucketRequestDto!=null&&orderBucketRequestDto.getOrderProductRequestDtos()!=null){
+        if (orderBucketRequestDto.getOrderProductRequestDtos() != null){
             List<OrderProductRequestDto> orderProductRequestDtos = orderBucketRequestDto.getOrderProductRequestDtos();
 
             Map<UUID, List<OrderProductRequestDto>> ordersForPharmacies = orderProductRequestDtos.stream().collect(Collectors.groupingBy(OrderProductRequestDto::getPharmacyId));
