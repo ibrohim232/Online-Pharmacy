@@ -19,9 +19,9 @@ spring:
       mjaail.smtp.auth: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USER:pharmacy_user}
+    username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
-    url: jdbc:postgresql://${DB_HOST:139.59.186.254:${DB_PORT:5433}}/${DB_NAME:pharmacy}
+    url: jdbc:postgresql://${DB_HOST:localhost:${DB_PORT:5432}}/${DB_NAME:postgres}
   jpa:
     hibernate:
       ddl-auto: update
