@@ -53,11 +53,11 @@ public class PharmacyService {
         PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Pharmacy do not found"));
 
         if (pharmacyEntity.isActive()) {
-            throw new WrongInputException("This pharmacy is not exist");
+            pharmacyEntity.setActive(false);
+            pharmacyRepository.save(pharmacyEntity);
         }
+        throw new WrongInputException("This pharmacy is not exist");
 
-        pharmacyEntity.setActive(true);
-        pharmacyRepository.save(pharmacyEntity);
     }
 
     public PharmacyResponseDto getByIdAndNotDeleted(UUID id) {
@@ -103,9 +103,10 @@ public class PharmacyService {
         PharmacyEntity pharmacyEntity = pharmacyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Pharmacy do not found"));
 
         if (pharmacyEntity.isActive()) {
-            return null;
+            return pharmacyEntity;
         }
-        return pharmacyEntity;
+        throw new DataNotFoundException("pharmacy not found while updating it.");
+
     }
 
 
@@ -123,7 +124,8 @@ public class PharmacyService {
     }
 
 
-    private static List<PharmacyEntity> findPharmaciesWithinRadius(Location myLocation, double radiusInKm, List<PharmacyEntity> pharmacies) {
+    private List<PharmacyEntity> findPharmaciesWithinRadius(Location myLocation, double radiusInKm/*,List<PharmacyEntity> pharmacies*/) {
+        List<PharmacyEntity> pharmacies = pharmacyRepository.findAll();
         List<PharmacyEntity> pharmaciesWithinRadius = new ArrayList<>();
 
         for (PharmacyEntity pharmacy : pharmacies) {

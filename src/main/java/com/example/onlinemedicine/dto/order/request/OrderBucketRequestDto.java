@@ -10,7 +10,5 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 public class OrderBucketRequestDto {
-    private UUID ownerId;
-    private Double price;
     private List<OrderProductRequestDto> orderProductRequestDtos;
 }

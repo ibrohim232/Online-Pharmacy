@@ -12,5 +12,4 @@ public class OrderProductRequestDto {
     private UUID medicineId;
     private UUID pharmacyId;
     private int count;
-    private Double price;
 }
