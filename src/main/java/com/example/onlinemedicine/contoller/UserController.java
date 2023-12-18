@@ -27,7 +27,7 @@ public class UserController {
         return userService.updateUserRole(dto);
     }
 
-    @PreAuthorize("hasRole('OWNER') and hasAuthority('CHANGE_PERMISSION')")
+    @PreAuthorize("hasAnyRole('SUPER_USER','SUPER_ADMIM') and hasAuthority('CHANGE_PERMISSION')")
     @PostMapping("/change-permissions")
     public UserResponseDto changePermissions(@RequestBody UpdateUserPermissionsDto dto) {
         return userService.updateUserPermissions(dto);
