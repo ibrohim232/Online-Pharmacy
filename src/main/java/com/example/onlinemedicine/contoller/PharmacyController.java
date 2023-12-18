@@ -2,6 +2,8 @@ package com.example.onlinemedicine.contoller;
 
 import com.example.onlinemedicine.dto.pharmacy.request.PharmacyRequestDto;
 import com.example.onlinemedicine.dto.pharmacy.response.PharmacyResponseDto;
+import com.example.onlinemedicine.entity.Location;
+import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.service.PharmacyService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,12 @@ public class PharmacyController {
     ){
         return service.getAll(page, pageSize);
     }
+//    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
+//    @GetMapping("/get-with-radius")
+//    public List<PharmacyResponseDto> getAllWithRadius(){
+//        Location location = new Location("41.353478541049256", "69.28678934184431");
+//        return service.findPharmaciesWithinRadius(location,5);
+//    }
 
     @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @GetMapping("/get-by-id")

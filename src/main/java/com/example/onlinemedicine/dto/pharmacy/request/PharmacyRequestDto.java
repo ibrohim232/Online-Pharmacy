@@ -23,7 +23,6 @@ public class PharmacyRequestDto {
     private UUID ownerId;
     @NotBlank
     private String pharmacyName;
-    private Set<UUID> medicineId;
     private LocationRequestDto location;
     private ContactRequestDto contact;
     @NotBlank
