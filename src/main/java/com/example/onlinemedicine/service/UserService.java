@@ -5,6 +5,7 @@ import com.example.onlinemedicine.dto.user.JwtResponseDto;
 import com.example.onlinemedicine.dto.user.*;
 import com.example.onlinemedicine.entity.UserEntity;
 import com.example.onlinemedicine.entity.enums.UserRole;
+import com.example.onlinemedicine.exception.DataAlreadyExistsException;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.exception.WrongInputException;
 import com.example.onlinemedicine.repository.UserRepository;
@@ -40,20 +41,18 @@ public class UserService {
 
     @Transactional
     public UserResponseDto singUp(UserRequestDto createReq) {
-
         if (!validation.isValidUserName(createReq.getUserName())) {
-            throw new WrongInputException("INVALID USERNAME");
+            throw new DataAlreadyExistsException("Username already exists");
         }
         if (!validation.isValidPassword(createReq.getPassword())) {
-            throw new WrongInputException("INVALID PASSWORD");
+            throw new WrongInputException("Password must be at least 8 characters and contain one uppercase,one lowercase , one character");
         }
         if (!validation.isValidPhoneNumber(createReq.getPhoneNumber())) {
-            throw new WrongInputException("INVALID  PHONE NUMBER");
+            throw new WrongInputException("Phone number should be star +998 and contain 7 numbers ");
         }
         if (!validation.isValidEmail(createReq.getEmail())) {
-            throw new WrongInputException("INVALID EMAIL");
+            throw new DataAlreadyExistsException("Email already exists");
         }
-
         UserEntity user = mapCRToEntity(createReq);
         user.setRoles(UserRole.USER);
         user.setCode(random.nextInt(1000, 10000));
@@ -65,7 +64,7 @@ public class UserService {
     public JwtResponseDto singIn(SingIdDto singIdDto) {
         UserEntity userEntity = repository.findByUserName(singIdDto.getUserName()).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
         if (!userEntity.isVerify()) {
-            throw new WrongInputException("isValidate is false");
+            throw new WrongInputException("User not verified");
         } else if (!passwordEncoder.matches(singIdDto.getPassword(), userEntity.getPassword()))
             throw new WrongInputException("PASSWORD INCORRECT");
         else {
@@ -73,14 +72,13 @@ public class UserService {
         }
     }
 
-    public String refreshToken(String refreshToken){
+    public String refreshToken(String refreshToken) {
         Jws<Claims> claimsJws = jwtService.extractToken(refreshToken);
         String userId = claimsJws.getBody().getSubject();
         UserEntity user = repository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
         return jwtService.generateToken(user);
     }
-
 
 
     public boolean verify(String email, int code) {
@@ -119,7 +117,6 @@ public class UserService {
         repository.save(userEntity);
         notificationService.sendVerifyCode(userEntity.getEmail(), userEntity.getCode());
     }
-
 
 
     public UserResponseDto me(UUID id) {
