@@ -9,7 +9,6 @@ import com.example.onlinemedicine.exception.DataAlreadyExistsException;
 import com.example.onlinemedicine.exception.DataNotFoundException;
 import com.example.onlinemedicine.exception.WrongInputException;
 import com.example.onlinemedicine.repository.UserRepository;
-import com.example.onlinemedicine.service.jwt.AuthenticationService;
 import com.example.onlinemedicine.service.jwt.JwtService;
 import com.example.onlinemedicine.validation.UserValidation;
 import io.jsonwebtoken.Claims;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -121,6 +119,13 @@ public class UserService {
 
     public UserResponseDto me(UUID id) {
         UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
+        return mapEntityToRES(userEntity);
+    }
+
+    public UserResponseDto update(UserRequestDto userRequestDto, UUID id) {
+        UserEntity userEntity = repository.findById(id).orElseThrow(() -> new DataNotFoundException("USER NOT FOUND"));
+        modelMapper.map(userRequestDto,userEntity);
+        repository.save(userEntity);
         return mapEntityToRES(userEntity);
     }
 

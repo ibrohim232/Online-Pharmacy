@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -22,16 +23,19 @@ public class JwtFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            response.getWriter().write("Access denied");
             return;
         }
         String token = authorization.substring(7);
-        if(jwtService.isTokenExpired(token)){
+        if (jwtService.isTokenExpired(token)) {
             Jws<Claims> claimsJws = jwtService.extractToken(token);
-            authenticationService.authenticate(claimsJws.getBody(), request);
-        }
-        else {
-            throw new TokenExpiredException("Token is expired");
+            boolean authenticate = authenticationService.authenticate(claimsJws.getBody(), request, response);
+            if (!authenticate) {
+                return;
+            }
+        } else {
+            response.getWriter().write("Token is expired");
+            return;
         }
         filterChain.doFilter(request, response);
     }

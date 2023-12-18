@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public String refreshToken(@RequestParam String refreshToken){
-      return userService.refreshToken(refreshToken);
+    public String refreshToken(@RequestParam String refreshToken) {
+        return userService.refreshToken(refreshToken);
     }
 
     @PostMapping("/verify")
@@ -41,6 +43,11 @@ public class AuthController {
             @RequestParam(defaultValue = "1") int size,
             @RequestParam(defaultValue = "1") int page) {
         return userService.getAll(page, size);
+    }
+
+    @PutMapping("/update")
+    public UserResponseDto update(@RequestBody UserRequestDto userRequestDto, Principal principal) {
+        return userService.update(userRequestDto,UUID.fromString(principal.getName()));
     }
 
     @GetMapping("/get-verify-code")
