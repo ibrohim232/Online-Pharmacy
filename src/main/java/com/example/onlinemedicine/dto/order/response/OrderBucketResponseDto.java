@@ -14,12 +14,12 @@ import java.util.UUID;
 @Data
 public class OrderBucketResponseDto {
     private UUID id;
-    private UUID ownerId;
+    private String owner;
     private Double price;
     private List<OrderProductResponseDto> orderProductResponseDtos;
     public OrderBucketResponseDto(OrderBucket orderBucket){
         this.id=orderBucket.getId();
-        this.ownerId= orderBucket.getOwner().getId();
+        this.owner= orderBucket.getOwner().getFullName();
         this.price= orderBucket.getPrice();
     }
 }

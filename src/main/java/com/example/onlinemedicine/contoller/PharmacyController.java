@@ -4,7 +4,6 @@ import com.example.onlinemedicine.dto.pharmacy.request.PharmacyRequestDto;
 import com.example.onlinemedicine.dto.pharmacy.response.PharmacyResponseDto;
 import com.example.onlinemedicine.service.PharmacyService;
 import com.google.gson.Gson;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -23,13 +22,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pharmacy")
 //@SecurityRequirement(name = "BearerAuthentication")
-//@PreAuthorize(value = "hasAnyRole('OWNER', 'SUPER_ADMIN')")
-//@Profile(value = )
 public class PharmacyController {
 
     private final PharmacyService service;
 
-    @PreAuthorize(value = "(hasRole('SUPER_USER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @GetMapping("/get-all")
     public List<PharmacyResponseDto> getAll(
             @RequestParam(defaultValue = "1") int page,
@@ -38,11 +35,10 @@ public class PharmacyController {
         return service.getAll(page, pageSize);
     }
 
-    @PreAuthorize(value = "(hasRole('OWNER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @GetMapping("/get-by-id")
     public PharmacyResponseDto getById(@RequestParam UUID id){
         PharmacyResponseDto pharmacyResponseDto = service.getById(id);
-//       Link.of()
         Link link = linkTo(methodOn(PharmacyController.class).delete(id)).withRel("delete-pharmacy");
         pharmacyResponseDto.add(link);
         return pharmacyResponseDto;
@@ -57,7 +53,7 @@ public class PharmacyController {
         return pharmacyResponseDto;
     }
 
-    @PreAuthorize(value = "(hasRole('OWNER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @PutMapping("/update-pharmacy")
     public PharmacyResponseDto update(@RequestBody PharmacyRequestDto requestDto, @RequestParam UUID id){
         PharmacyResponseDto pharmacyResponseDto = service.updateAndNotDeleted(id, requestDto);
@@ -66,7 +62,7 @@ public class PharmacyController {
         return pharmacyResponseDto;
     }
 
-    @PreAuthorize(value = "(hasRole('OWNER') AND hasAuthority('OWNER_GET')) || hasRole('SUPER_ADMIN')")
+    @PreAuthorize(value = "hasRole('SUPER_ADMIN')")
     @DeleteMapping("/delete-pharmacy")
     public ResponseEntity<String> delete(@RequestParam UUID id){
         service.delete(id);

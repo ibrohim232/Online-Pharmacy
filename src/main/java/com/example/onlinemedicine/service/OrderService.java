@@ -26,8 +26,8 @@ public class OrderService {
     private final UserRepository userRepository;
     private final ModelMapper  modelMapper;
 
-    public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto){
-        UserEntity owner = userRepository.findById(orderBucketRequestDto.getOwnerId())
+    public List<OrderBucketResponseDto> save(OrderBucketRequestDto orderBucketRequestDto,UUID userId){
+        UserEntity owner = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("Owner not found while adding new order"));
         if (orderBucketRequestDto.getOrderProductRequestDtos() != null){
             List<OrderProductRequestDto> orderProductRequestDtos = orderBucketRequestDto.getOrderProductRequestDtos();
@@ -35,6 +35,8 @@ public class OrderService {
             Map<UUID, List<OrderProductRequestDto>> ordersForPharmacies = orderProductRequestDtos.stream().collect(Collectors.groupingBy(OrderProductRequestDto::getPharmacyId));
             List<OrderBucketResponseDto> orderBucketResponseDtos=new ArrayList<>();
             for (Map.Entry<UUID, List<OrderProductRequestDto>> order : ordersForPharmacies.entrySet()) {
+                double overallPrice =  0;
+                double price=0;
                 PharmacyEntity pharmacyEntity = pharmacyRepository.findById(order.getKey())
                         .orElseThrow(() -> new DataNotFoundException("Pharmacy not found while setting order"));
 
@@ -42,25 +44,32 @@ public class OrderService {
                 List<OrderProduct> orderProducts=new ArrayList<>();
                 for (OrderProductRequestDto orderProductRequestDto : orderBucketRequestDto.getOrderProductRequestDtos()) {
                     OrderProduct orderProduct = modelMapper.map(orderProductRequestDto, OrderProduct.class);
-                    orderProduct.setMedicine(medicineRepository.findById(orderProductRequestDto.getMedicineId())
-                            .orElseThrow(() -> new DataNotFoundException("Medicine not found")));
-
+                    MedicineEntity medicine = medicineRepository.findById(orderProductRequestDto.getMedicineId())
+                            .orElseThrow(() -> new DataNotFoundException("Medicine not found"));
+                    orderProduct.setMedicine(medicine);
+                    orderProduct.setPrice(medicine.getPrice());
                     orderProducts.add(orderProduct);
                     orderProduct.setOrderBucket(orderBucket);
+                    overallPrice=(overallPrice+medicine.getPrice());
+                    price=price+medicine.getPrice();
                 }
                 orderBucket.setOrderProducts(orderProducts);
+                orderBucket.setPrice(price);
+                price=0;
                 pharmacyEntity.getMyOrders().add(orderBucket);
                 orderBucket.setPharmacyEntity(pharmacyEntity);
                 orderBucket.setOwner(owner);
                 OrderBucket saved = orderRepository.save(orderBucket);
 
                 OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
-                orderBucketResponseDto.setOwnerId(owner.getId());
+                orderBucketResponseDto.setOwner(owner.getFullName());
+                orderBucketResponseDto.setPrice(overallPrice);
                 List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
                 for (OrderProduct orderProduct : saved.getOrderProducts()) {
                     MedicineEntity medicine = medicineRepository.findById(orderProduct.getMedicine().getId())
                             .orElseThrow(() -> new DataNotFoundException("Medicine not found while decrementing"));
                     medicine.setCount(medicine.getCount()-orderProduct.getCount());
+                    medicineRepository.save(medicine);
                     OrderProductResponseDto orderProductResponseDto = modelMapper.map(orderProduct, OrderProductResponseDto.class);
                     orderProductResponseDto.setMedicineId(medicine.getId());
                     orderProductResponseDtos.add(orderProductResponseDto);
@@ -109,4 +118,8 @@ public class OrderService {
         orderRepository.deleteById(id);
         return modelMapper.map(ordersNotFoundById, OrderBucketResponseDto.class);
     }
+
+//    public OrderBucketResponseDto getByBucketId(UUID bucketId) {
+//        orderRepository.findById(bucketId);
+//    }
 }
