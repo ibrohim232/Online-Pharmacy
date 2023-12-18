@@ -1,8 +1,10 @@
 package com.example.onlinemedicine.service;
 
+import com.example.onlinemedicine.dto.midicine.MedicineResponseDto;
 import com.example.onlinemedicine.dto.pharmacy.request.PharmacyRequestDto;
 import com.example.onlinemedicine.dto.pharmacy.response.PharmacyResponseDto;
 import com.example.onlinemedicine.entity.Location;
+import com.example.onlinemedicine.entity.MedicineEntity;
 import com.example.onlinemedicine.entity.PharmacyEntity;
 import com.example.onlinemedicine.entity.UserEntity;
 import com.example.onlinemedicine.exception.*;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -120,13 +123,20 @@ public class PharmacyService {
     }
 
     private PharmacyResponseDto entityToResponse(PharmacyEntity pharmacyEntity) {
-        return modelMapper.map(pharmacyEntity, PharmacyResponseDto.class);
+        PharmacyResponseDto pharmacyResponseDto = modelMapper.map(pharmacyEntity, PharmacyResponseDto.class);
+        Set<UUID> medicineResponseDtos=new HashSet<>();
+        for (MedicineEntity medicine : pharmacyEntity.getMedicines()) {
+            medicineResponseDtos.add(medicine.getId());
+        }
+        pharmacyResponseDto.setMedicineId(medicineResponseDtos);
+        return pharmacyResponseDto;
     }
 
 
-    private List<PharmacyEntity> findPharmaciesWithinRadius(Location myLocation, double radiusInKm/*,List<PharmacyEntity> pharmacies*/) {
+    public List<PharmacyResponseDto> findPharmaciesWithinRadius(Location myLocation, double radiusInKm/*,List<PharmacyEntity> pharmacies*/) {
         List<PharmacyEntity> pharmacies = pharmacyRepository.findAll();
         List<PharmacyEntity> pharmaciesWithinRadius = new ArrayList<>();
+        List<PharmacyResponseDto> pharmaciesWithinRadiusDto = new ArrayList<>();
 
         for (PharmacyEntity pharmacy : pharmacies) {
             double distance = calculateHaversineDistance(myLocation, pharmacy.getLocation());
@@ -135,8 +145,11 @@ public class PharmacyService {
                 pharmaciesWithinRadius.add(pharmacy);
             }
         }
-
-        return pharmaciesWithinRadius;
+        for (PharmacyEntity withinRadius : pharmaciesWithinRadius) {
+            PharmacyResponseDto pharmacyResponseDto = entityToResponse(withinRadius);
+            pharmaciesWithinRadiusDto.add(pharmacyResponseDto);
+        }
+        return pharmaciesWithinRadiusDto;
     }
 
     private static double calculateHaversineDistance(Location location1, Location location2) {
@@ -158,6 +171,7 @@ public class PharmacyService {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return R * c;
+        return (R * c);
     }
+
 }

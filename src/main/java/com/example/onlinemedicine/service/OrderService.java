@@ -35,7 +35,6 @@ public class OrderService {
             Map<UUID, List<OrderProductRequestDto>> ordersForPharmacies = orderProductRequestDtos.stream().collect(Collectors.groupingBy(OrderProductRequestDto::getPharmacyId));
             List<OrderBucketResponseDto> orderBucketResponseDtos=new ArrayList<>();
             for (Map.Entry<UUID, List<OrderProductRequestDto>> order : ordersForPharmacies.entrySet()) {
-                double overallPrice =  0;
                 double price=0;
                 PharmacyEntity pharmacyEntity = pharmacyRepository.findById(order.getKey())
                         .orElseThrow(() -> new DataNotFoundException("Pharmacy not found while setting order"));
@@ -50,20 +49,18 @@ public class OrderService {
                     orderProduct.setPrice(medicine.getPrice());
                     orderProducts.add(orderProduct);
                     orderProduct.setOrderBucket(orderBucket);
-                    overallPrice=(overallPrice+medicine.getPrice());
-                    price=price+medicine.getPrice();
+                    price=price+(medicine.getPrice()*orderProduct.getCount());
                 }
                 orderBucket.setOrderProducts(orderProducts);
-                orderBucket.setPrice(price);
-                price=0;
+
                 pharmacyEntity.getMyOrders().add(orderBucket);
                 orderBucket.setPharmacyEntity(pharmacyEntity);
                 orderBucket.setOwner(owner);
+                orderBucket.setPrice(price);
                 OrderBucket saved = orderRepository.save(orderBucket);
 
                 OrderBucketResponseDto orderBucketResponseDto = modelMapper.map(saved, OrderBucketResponseDto.class);
                 orderBucketResponseDto.setOwner(owner.getFullName());
-                orderBucketResponseDto.setPrice(overallPrice);
                 List<OrderProductResponseDto> orderProductResponseDtos=new ArrayList<>();
                 for (OrderProduct orderProduct : saved.getOrderProducts()) {
                     MedicineEntity medicine = medicineRepository.findById(orderProduct.getMedicine().getId())
