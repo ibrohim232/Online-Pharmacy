@@ -41,6 +41,7 @@ public class SpringConfig {
             "/medicine/find-by-name-order-by-higher-price",
             "/medicine/find-by-name",
             "/medicine/find-by-id",
+            "/medicine/get-all",
             "/email/**"
 
     };
