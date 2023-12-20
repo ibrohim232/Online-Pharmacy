@@ -48,7 +48,7 @@ public class MedicineService {
         MedicineEntity map = requestToEntity(medicineRequestDto);
         map.setPharmacy(pharmacyEntity.get());
         this.repository.save(map);
-        String photoPath = photoService.uploadImageToFileSystem(file, map);
+        photoService.uploadImageToFileSystem(file, map);
         return entityToResponse(map);
     }
 

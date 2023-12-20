@@ -25,15 +25,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MedicineController {
     private final MedicineService medicineService;
-    private final PhotoService photoService;
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+
     @GetMapping({"/get-all"})
     public List<MedicineResponseDto> getAll(@RequestParam(defaultValue = "1") int size, @RequestParam(defaultValue = "1") int page) {
         return this.medicineService.getAll(page, size);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @PostMapping({"/create"})
     public MedicineResponseDto create(@RequestPart("dto") MedicineRequestDto medicineRequestDto, @RequestPart("file") MultipartFile file) throws IOException {
         return this.medicineService.create(medicineRequestDto, file);
@@ -45,7 +44,7 @@ public class MedicineController {
         return this.medicineService.findById(id);
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CHANGE_ROLE')")
+    @PreAuthorize("hasRole('SUPER_USER')")
     @DeleteMapping({"/delete-by-id"})
     public void deleteById(@RequestParam UUID id) {
         this.medicineService.deleteById(id);
